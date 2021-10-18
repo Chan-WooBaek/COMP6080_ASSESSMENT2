@@ -3,3 +3,7 @@ import { BACKEND_PORT } from './config.js';
 import { fileToDataUrl } from './helpers.js';
 
 console.log('Let\'s go!');
+
+document.getElementById("loginRegister").addEventListener("click", (event) => {
+	document.getElementById("register").style.display = "block";
+})

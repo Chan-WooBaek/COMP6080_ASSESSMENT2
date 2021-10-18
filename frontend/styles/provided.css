@@ -7,3 +7,15 @@ html, body {
     height: 100%;
     font-family: -apple-system, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
+
+.gridContainer {
+    display: grid;
+}
+
+.login {
+
+}
+
+.register {
+    display: none;
+}
