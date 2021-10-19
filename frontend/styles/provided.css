@@ -1,21 +1,38 @@
 
 /* base styles, feel free to edit */
 html, body {
-    margin: 0;
-    padding: 0;
-    background-color: #fafafa;
-    height: 100%;
-    font-family: -apple-system, 'Open Sans', 'Helvetica Neue', sans-serif;
+	margin: 0;
+	padding: 0;
+	background-color: #fafafa;
+	height: 100%;
+	font-family: -apple-system, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-.gridContainer {
-    display: grid;
+.notLoggedIn {
+	display: grid;
 }
 
 .login {
-
+	text-align: center;
 }
 
 .register {
-    display: none;
+	display: none;
+	text-align: center;
+}
+
+.errorPopup {
+	display: none;
+	position: absolute;
+	background-color: blue;
+	align-self: center;
+	flex-direction: column;
+	padding: 4px;
+	width: 25%;
+	text-align: center;
+	margin: auto;
+}
+
+.loggedIn {
+	display: none;
 }
