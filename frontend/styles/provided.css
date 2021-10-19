@@ -24,7 +24,7 @@ html, body {
 .errorPopup {
 	display: none;
 	position: absolute;
-	background-color: blue;
+	background-color: grey;
 	align-self: center;
 	flex-direction: column;
 	padding: 4px;
