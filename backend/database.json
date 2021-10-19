@@ -1,5 +1,13 @@
 {
   "users": {
+    "15122": {
+      "email": "betty@email.com",
+      "name": "Betty",
+      "password": "cardigan",
+      "bio": null,
+      "image": null,
+      "sessionActive": true
+    },
     "15272": {
       "email": "mia@email.com",
       "name": "Mia",
@@ -12,6 +20,14 @@
       "email": "sebastian@email.com",
       "name": "Sebastian",
       "password": "chickenonastick",
+      "bio": null,
+      "image": null,
+      "sessionActive": true
+    },
+    "65577": {
+      "email": "chanwoobaek@hotmail.com",
+      "name": "Chan",
+      "password": "thisischan",
       "bio": null,
       "image": null,
       "sessionActive": true
