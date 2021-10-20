@@ -29,3 +29,30 @@ export function fileToDataUrl(file) {
     reader.readAsDataURL(file);
     return dataUrlPromise;
 }
+
+export const fetchPOST = (path, body) => {
+	const requestOption = {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify(body),
+	};
+
+	return new Promise((resolve, reject) => {
+		fetch(`http://localhost:5005/${path}`, requestOption)
+		.then((response) => {
+			if (response.status === 400 || response.status === 403) {
+				response.json()
+				.then((errorMsg) => {
+					reject(errorMsg['error']);
+				})
+				
+			} else if (response.status === 200) {
+				response.json()
+				.then(data => {
+					resolve(data);
+				});
+			}
+		})
+		.catch((err) => console.log(err));
+	});
+}

@@ -1,3 +1,5 @@
+import * as helper from './helpers.js';
+
 // Reveal register form
 export function showRegisterForm() {
     document.getElementById("register").style.display = "block";
@@ -9,27 +11,21 @@ export function showRegisterForm() {
 export function submitLoginForm() {
 	const email = document.getElementById("loginEmail").value;
 	const password = document.getElementById("loginPassword").value;
-
-	const jsonString = JSON.stringify({
+	const body = {
 		email: email,
 		password: password,
+	}
+
+	helper.fetchPOST('auth/login', body)
+	.then((data) => {
+		document.getElementById("notLoggedIn").style.display = "none";
+		document.getElementById("loggedIn").style.display = "grid";
+	})
+	.catch((errorMsg) => {
+		document.getElementById("popupMsg").textContent = errorMsg;
+		document.getElementById("popup").style.display = "flex";
 	});
 
-	const requestOption = {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: jsonString,
-	};
-
-	fetch('http://localhost:5005/auth/login', requestOption).then((response) => {
-		if(response.status === 400) {
-			document.getElementById("errorMsg").textContent = "Invalid email or password";
-			document.getElementById("errorPopup").style.display = "flex";
-		} else if(response.status === 200) {
-			document.getElementById("notLoggedIn").style.display = "none";
-			document.getElementById("loggedIn").style.display = "grid";
-		}
-	});
 }
 
 
@@ -39,36 +35,30 @@ export function submitRegisterForm() {
 	const password = document.getElementById("registerPassword").value;
 	const confirmPassword = document.getElementById("registerConfirmPassword").value;
 	const name = document.getElementById("registerName").value;
-
-	if (password != confirmPassword) {
-		document.getElementById("errorMsg").textContent = "Passwords don't match";
-		document.getElementById("errorPopup").style.display = "flex";
-		return;
-	}
-	const jsonString = JSON.stringify({
+	const body = {
 		email: email,
 		password: password,
 		name: name,
-	});
+	}
 
-	const requestOption = {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: jsonString,
-	};
+	if (password != confirmPassword) {
+		document.getElementById("popupMsg").textContent = "Passwords don't match";
+		document.getElementById("popup").style.display = "flex";
+		return;
+	}
 
-	fetch('http://localhost:5005/auth/register', requestOption)
-		.then((response) => {
-			if(response.status === 400) {
-				document.getElementById("errorMsg").textContent = "Invalid email or password";
-				document.getElementById("errorPopup").style.display = "flex";
-			}
-		});
+	helper.fetchPOST('auth/register', body)
+	.then((data) => {
+		document.getElementById("popupMsg").textContent = "New user created!";
+		document.getElementById("popup").style.display = "flex";
+	})
+	.catch((data) => {
+		document.getElementById("popupMsg").textContent = data;
+		document.getElementById("popup").style.display = "flex";
+	})
 }
 
 // Error popup close button is clicked
 export function closeErrorPopup() {
-	document.getElementById("errorPopup").style.display = "none";
+	document.getElementById("popup").style.display = "none";
 }
-
-

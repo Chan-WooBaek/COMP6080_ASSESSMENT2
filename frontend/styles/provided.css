@@ -21,7 +21,7 @@ html, body {
 	text-align: center;
 }
 
-.errorPopup {
+.popup {
 	display: none;
 	position: absolute;
 	background-color: grey;
@@ -35,4 +35,44 @@ html, body {
 
 .loggedIn {
 	display: none;
+	grid-template-columns: 2fr 10fr 1fr;
+	grid-template-rows: 1fr 1fr 2fr;
+	grid-template-areas: 
+		"Public Info User"
+		"Public Message Message"
+		"Private Message Message";
+	width: 100%;
+	height: 100vh;
+}
+
+.channelsPublic {
+	grid-area: Public;
+}
+
+.channelsPrivate {
+	grid-area: Private;
+}
+
+.channelInfo {
+	grid-area: Info;
+}
+
+.channelMessage {
+	grid-area: Message;
+}
+
+.user {
+	grid-area: User;
+}
+
+.channelCreateForm {
+	display: none;
+	position: absolute;
+	background-color: red;
+	align-self: center;
+	flex-direction: column;
+	padding: 4px;
+	width: 20vw;
+	text-align: center;
+	margin: auto;
 }

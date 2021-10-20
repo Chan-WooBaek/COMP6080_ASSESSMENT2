@@ -36,24 +36,32 @@
 				<input type="button" id="registerSubmit" value="Submit">
 			</form>
 		</div>
-		<div class="errorPopup" id="errorPopup">
-			<p id="errorMsg"></p>
+		<div class="popup" id="popup">
+			<p id="popupMsg"></p>
 			<input type="button" id="errorClose" value="Close">
 		</div>
 		<p>&copy; Slackr</p>
 	</div>
 	<div class="loggedIn" id="loggedIn">
-		<div class="container-fluid vh-100" style="background-color: brown;">
-			<div class="row">
-				<div class="col-sm">1</div>
-				<div class="col-sm">2</div>
-				<div class="col-sm">3</div>
-			</div>
-			<div class="row">
-				<div class="col-sm">4</div>
-				<div class="col-sm">5</div>
-				<div class="col-sm">6</div>
-			</div>
+		<div class="channelsPublic">Public Channels</div>
+		<div class="channelInfo">Channel Info</div>
+		<div class="user">User
+			<input type="button" id="channelCreate" value="Create New Channel">
+		</div>
+		<div class="channelsPrivate">Private Channels</div>
+		<div class="channelMessage">Channel Message</div>
+		<div class="channelCreateForm" id="channelCreateForm">
+			<form>
+				<h1>Create new channel</h1>
+				<input type="text" id="newChannelName" placeholder="Channel Name"><br>
+				<input type="text" id="newChannelDescription" placeholder="Channel Description"><br>
+				<input type="radio" name ="newChannel" id="newChannelPrivate">
+				<label for="newChannelPrivate">Private</label><br>
+				<input type="radio" name ="newChannel" id="newChannelPublic">
+				<label for="newChannelPublic">Public</label><br>
+				<input type="button" id="newChannelSubmit" value="Submit">
+				<input type="button" id="newChannelClose" value="Close">
+			</form>
 		</div>
 	</div>
 </main>
