@@ -58,6 +58,105 @@
     }
   },
   "channels": {
+    "111111": {
+      "name": "testPublic",
+      "creator": 65577,
+      "private": false,
+      "description": "this is a test",
+      "createdAt": "2021-09-13T08:00:03.220Z",
+      "members": [
+        65577
+      ],
+      "messages": [
+        {
+          "id": 42,
+          "message": "yeah, i do! i just didn't think that you did",
+          "sender": 15272,
+          "sentAt": "2021-09-13T08:00:04.181Z",
+          "edited": false,
+          "editedAt": null,
+          "pinned": false,
+          "reacts": []
+        }
+      ]
+    },
+    "111112": {
+      "name": "testPrivate",
+      "creator": 65577,
+      "private": true,
+      "description": "this is a test",
+      "createdAt": "2021-09-13T08:00:03.220Z",
+      "members": [
+        65577
+      ],
+      "messages": [
+        {
+          "id": 42,
+          "message": "yeah, i do! i just didn't think that you did",
+          "sender": 15272,
+          "sentAt": "2021-09-13T08:00:04.181Z",
+          "edited": false,
+          "editedAt": null,
+          "pinned": false,
+          "reacts": []
+        }
+      ]
+    },
+    "151795": {
+      "name": "hello",
+      "creator": 65577,
+      "private": false,
+      "description": "",
+      "createdAt": "2021-10-21T10:16:20.075Z",
+      "members": [
+        65577
+      ],
+      "messages": []
+    },
+    "216959": {
+      "name": "hello",
+      "creator": 65577,
+      "private": true,
+      "description": "",
+      "createdAt": "2021-10-21T10:16:25.964Z",
+      "members": [
+        65577
+      ],
+      "messages": []
+    },
+    "548599": {
+      "name": "a",
+      "creator": 65577,
+      "private": false,
+      "description": "b",
+      "createdAt": "2021-10-21T10:05:07.434Z",
+      "members": [
+        65577
+      ],
+      "messages": []
+    },
+    "644295": {
+      "name": "ab",
+      "creator": 65577,
+      "private": false,
+      "description": "b",
+      "createdAt": "2021-10-21T10:01:55.570Z",
+      "members": [
+        65577
+      ],
+      "messages": []
+    },
+    "747334": {
+      "name": "hello",
+      "creator": 65577,
+      "private": true,
+      "description": "",
+      "createdAt": "2021-10-21T10:16:23.420Z",
+      "members": [
+        65577
+      ],
+      "messages": []
+    },
     "813580": {
       "name": "public channel",
       "creator": 15272,
@@ -66,7 +165,8 @@
       "createdAt": "2021-09-13T08:00:03.220Z",
       "members": [
         15272,
-        56422
+        56422,
+        65577
       ],
       "messages": [
         {
@@ -490,6 +590,28 @@
           "reacts": []
         }
       ]
+    },
+    "851124": {
+      "name": "a",
+      "creator": 65577,
+      "private": false,
+      "description": "",
+      "createdAt": "2021-10-21T10:09:15.165Z",
+      "members": [
+        65577
+      ],
+      "messages": []
+    },
+    "886500": {
+      "name": "hello1",
+      "creator": 65577,
+      "private": true,
+      "description": "",
+      "createdAt": "2021-10-21T10:17:02.119Z",
+      "members": [
+        65577
+      ],
+      "messages": []
     }
   },
   "nextMessageId": 43

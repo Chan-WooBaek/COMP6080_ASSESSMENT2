@@ -4,30 +4,6 @@ import * as helper from './helpers.js';
 export function showRegisterForm() {
     document.getElementById("register").style.display = "block";
 };
-	
-
-
-// Login form submit button is clicked
-export function submitLoginForm() {
-	const email = document.getElementById("loginEmail").value;
-	const password = document.getElementById("loginPassword").value;
-	const body = {
-		email: email,
-		password: password,
-	}
-
-	helper.fetchPOST('auth/login', body)
-	.then((data) => {
-		document.getElementById("notLoggedIn").style.display = "none";
-		document.getElementById("loggedIn").style.display = "grid";
-	})
-	.catch((errorMsg) => {
-		document.getElementById("popupMsg").textContent = errorMsg;
-		document.getElementById("popup").style.display = "flex";
-	});
-
-}
-
 
 // Register submit button is clicked
 export function submitRegisterForm() {
@@ -47,7 +23,7 @@ export function submitRegisterForm() {
 		return;
 	}
 
-	helper.fetchPOST('auth/register', body)
+	helper.myFetch('POST', 'auth/register', null, body)
 	.then((data) => {
 		document.getElementById("popupMsg").textContent = "New user created!";
 		document.getElementById("popup").style.display = "flex";

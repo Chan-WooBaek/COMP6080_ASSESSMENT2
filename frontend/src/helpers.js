@@ -30,12 +30,15 @@ export function fileToDataUrl(file) {
     return dataUrlPromise;
 }
 
-export const fetchPOST = (path, body) => {
+export const myFetch = (method, path, token, body) => {
 	const requestOption = {
-		method: 'POST',
+		method: method,
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify(body),
 	};
+	if (token != null) {
+		requestOption.headers['Authorization'] = `Bearer ${token}`;
+	}
 
 	return new Promise((resolve, reject) => {
 		fetch(`http://localhost:5005/${path}`, requestOption)

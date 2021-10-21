@@ -3,8 +3,14 @@ import { BACKEND_PORT } from './config.js';
 import { fileToDataUrl } from './helpers.js';
 import * as auth from './auth.js';
 import * as channel from './channels.js';
+import * as helper from './helpers.js';
 
 console.log('Let\'s go!');
+
+let TOKEN = null;
+const storeToken = (token) => {
+	TOKEN = token;
+}
 
 // LoginForm register button is pressed
 document.getElementById("loginRegister").addEventListener("click", (event) => {
@@ -13,7 +19,23 @@ document.getElementById("loginRegister").addEventListener("click", (event) => {
 
 // LoginForm submit button is pressed
 document.getElementById("loginSubmit").addEventListener("click", (event) => {
-	auth.submitLoginForm();
+	const email = document.getElementById("loginEmail").value;
+	const password = document.getElementById("loginPassword").value;
+	const body = {
+		email: email,
+		password: password,
+	}
+	helper.myFetch('POST','auth/login', null, body)
+	.then((data) => {
+		storeToken(data['token']);
+		document.getElementById("notLoggedIn").style.display = "none";
+		document.getElementById("loggedIn").style.display = "grid";
+		channel.updateChannelShow(TOKEN);
+	})
+	.catch((errorMsg) => {
+		document.getElementById("popupMsg").textContent = errorMsg;
+		document.getElementById("popup").style.display = "flex";
+	});
 });
 
 // RegisterForm submit button is pressed
@@ -31,12 +53,13 @@ document.getElementById("channelCreate").addEventListener("click", (event) => {
 	document.getElementById("channelCreateForm").style.display = "flex";
 });
 
-// Submit button pressed for channel form
+// Submit button pressed for new channel form
 document.getElementById("newChannelSubmit").addEventListener("click", (event) => {
-	channel.channelCreate();
+	channel.createChannel(TOKEN);
 });
 
-// Close button pressed for channel form
+// Close button pressed for new channel form
 document.getElementById("newChannelClose").addEventListener("click", (event) => {
 	document.getElementById("channelCreateForm").style.display = "none";
 });
+
