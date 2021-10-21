@@ -55,10 +55,14 @@ html, body {
 
 .channelInfo {
 	grid-area: Info;
+	white-space: pre-line;
+	line-height: 15px;
 }
 
 .channelMessage {
 	grid-area: Message;
+	white-space: pre-line;
+	line-height: 15px;
 }
 
 .user {
