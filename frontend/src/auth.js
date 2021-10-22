@@ -33,8 +33,3 @@ export function submitRegisterForm() {
 		document.getElementById("popup").style.display = "flex";
 	})
 }
-
-// Error popup close button is clicked
-export function closeErrorPopup() {
-	document.getElementById("popup").style.display = "none";
-}

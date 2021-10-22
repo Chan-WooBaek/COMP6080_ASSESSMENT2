@@ -59,13 +59,14 @@
   },
   "channels": {
     "111111": {
-      "name": "testPublic",
+      "name": "aimproved",
       "creator": 65577,
       "private": false,
-      "description": "this is a test",
+      "description": "yo",
       "createdAt": "2021-09-13T08:00:03.220Z",
       "members": [
-        65577
+        65577,
+        28926
       ],
       "messages": [
         {
@@ -87,7 +88,8 @@
       "description": "this is a test",
       "createdAt": "2021-09-13T08:00:03.220Z",
       "members": [
-        65577
+        65577,
+        28926
       ],
       "messages": [
         {
@@ -103,7 +105,7 @@
       ]
     },
     "151795": {
-      "name": "hello",
+      "name": "newHello",
       "creator": 65577,
       "private": false,
       "description": "",
@@ -125,10 +127,10 @@
       "messages": []
     },
     "548599": {
-      "name": "a",
+      "name": "b",
       "creator": 65577,
       "private": false,
-      "description": "b",
+      "description": "dell",
       "createdAt": "2021-10-21T10:05:07.434Z",
       "members": [
         65577
@@ -136,10 +138,10 @@
       "messages": []
     },
     "644295": {
-      "name": "ab",
+      "name": "Better",
       "creator": 65577,
       "private": false,
-      "description": "b",
+      "description": "description",
       "createdAt": "2021-10-21T10:01:55.570Z",
       "members": [
         65577
@@ -161,7 +163,7 @@
       "name": "public channel",
       "creator": 15272,
       "private": false,
-      "description": "",
+      "description": "description",
       "createdAt": "2021-09-13T08:00:03.220Z",
       "members": [
         15272,

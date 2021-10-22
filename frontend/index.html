@@ -48,6 +48,8 @@
 		</div>
 		<div class="channelInfo"><p>Channel Info</p> 
 			<p id="infoText">Choose a channel to view channel info</p>
+			<input type="button" class= "editChannelButton" id="editChannelButton" value="Edit channel">
+			<input type="button" class="leaveChannelButton" id="leaveChannelButton" value="Leave channel">
 		</div>
 		<div class="user">User
 			<input type="button" id="channelCreate" value="Create New Channel">
@@ -60,7 +62,7 @@
 		</div>
 		<div class="channelCreateForm" id="channelCreateForm">
 			<form>
-				<h1>Create new channel</h1>
+				<h1 id="formCreateTitle"></h1>
 				<input type="text" id="newChannelName" placeholder="Channel Name"><br>
 				<input type="text" id="newChannelDescription" placeholder="Channel Description"><br>
 				<input type="checkbox" name ="newChannel" id="newChannelPrivate">
@@ -68,6 +70,20 @@
 				<input type="button" id="newChannelSubmit" value="Submit">
 				<input type="button" id="newChannelClose" value="Close">
 			</form>
+		</div>
+		<div class="channelEditForm" id="channelEditForm">
+			<form>
+				<h1 id="formEditTitle"></h1>
+				<input type="text" id="editChannelName" placeholder="Channel Name"><br>
+				<input type="text" id="editChannelDescription" placeholder="Channel Description"><br>
+				<input type="button" id="editChannelSubmit" value="Submit">
+				<input type="button" id="editChannelClose" value="Close">
+			</form>
+		</div>
+		<div class="joinPopup" id="joinPopup">
+			<h1 id="joinText">Join this channel?</h1>
+			<input type="button" id="joinJoinButton" value="join">
+			<input type="button" id="joinCloseButton" value="close">
 		</div>
 	</div>
 </main>

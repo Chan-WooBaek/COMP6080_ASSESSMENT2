@@ -1,14 +1,21 @@
 import * as helper from './helpers.js';
+var currentChannelId = false;
 
-export function updateChannelShow(TOKEN) {
+export function updateChannelListShow(TOKEN, USERID) {
+	document.getElementById("publicChannelList").textContent = "";
 	helper.myFetch('GET', 'channel', TOKEN)
 	.then((data) => {
 		data['channels'].map(channels => {
 			if (document.getElementsByName(channels['name']).length === 0) {
-				addChannelButton(channels['name'], channels['private'], TOKEN, channels['id']);
+				if(channels['private'] && channels['members'].includes(USERID)) {
+					addChannelButton(channels['name'], channels['private'], TOKEN, channels['id']);
+				} else if (!channels['private']){
+					addChannelButton(channels['name'], channels['private'], TOKEN, channels['id']);
+				}
 			}
 		})
 	})
+	
 }
 
 export function addChannelButton(value, isPrivate, TOKEN, channelId) {
@@ -18,7 +25,21 @@ export function addChannelButton(value, isPrivate, TOKEN, channelId) {
 	element.value = value;
 	element.name = value;
 	element.onclick = function() {
-		updateChannelScreen(TOKEN, channelId);
+		helper.myFetch('GET', `channel/${channelId}`, TOKEN)
+		// If a member
+		.then(data => {
+			document.getElementById("editChannelButton").style.display = "flex";
+			document.getElementById("leaveChannelButton").style.display = "flex";
+			currentChannelId = channelId;
+			updateChannelInfoScreen(TOKEN, channelId);
+		})
+		// If not a member
+		.catch(data => {
+			currentChannelId = channelId;
+			console.log("not a member");
+			document.getElementById("joinPopup").style.display = "flex";
+		})
+		
 	};
 
 	if (isPrivate) {
@@ -34,12 +55,10 @@ export function addChannelButton(value, isPrivate, TOKEN, channelId) {
 }
 
 export function createChannel(TOKEN) {
-	var name = document.getElementById("newChannelName").value;
-	var description = document.getElementById("newChannelDescription").value;
 	const body = {
-		name: name,
+		name: document.getElementById("newChannelName").value,
 		private: document.getElementById("newChannelPrivate").checked,
-		description: description
+		description: document.getElementById("newChannelDescription").value
 	}
 	helper.myFetch('POST', 'channel', TOKEN, body)
 	.then(data => {
@@ -47,7 +66,17 @@ export function createChannel(TOKEN) {
 	})
 }
 
-export function updateChannelScreen(TOKEN, channelId) {
+export function editChannel(TOKEN) {
+	const body = {
+		name: document.getElementById("editChannelName").value,
+		description: document.getElementById("editChannelDescription").value,
+	}
+	helper.myFetch('PUT', `channel/${currentChannelId}`, TOKEN, body)
+
+}
+
+export function updateChannelInfoScreen(TOKEN, channelId) {
+
 	helper.myFetch('GET', `channel/${channelId}`, TOKEN)
 	.then(data => {
 		var date = new Date(data['createdAt']);
@@ -67,5 +96,23 @@ export function updateChannelScreen(TOKEN, channelId) {
 		for (let i=0; i < data['messages'].length; i++) {
 			document.getElementById("messageText").textContent += `${data['messages'][i]['message']}\n`;
 		}
+	})
+}
+
+export function getCurrentChannelId() {
+	return currentChannelId;
+}
+
+export function joinChannel(TOKEN) {
+	helper.myFetch('POST', `channel/${getCurrentChannelId()}/join`, TOKEN)
+	.then(data => {
+		console.log("Joined Channel");
+	})
+}
+
+export function leaveChannel(TOKEN) {
+	helper.myFetch('POST', `channel/${getCurrentChannelId()}/leave`, TOKEN)
+	.then(data => {
+		console.log("Left Channel");
 	})
 }

@@ -80,3 +80,35 @@ html, body {
 	text-align: center;
 	margin: auto;
 }
+
+.channelEditForm {
+	display: none;
+	position: absolute;
+	background-color: blue;
+	align-self: center;
+	flex-direction: column;
+	padding: 4px;
+	width: 20vw;
+	text-align: center;
+	margin: auto;
+}
+
+.editChannelButton {
+	display: none;
+}
+
+.leaveChannelButton {
+	display: none;
+}
+
+.joinPopup {
+	display: none;
+	position: absolute;
+	background-color: green;
+	align-self: center;
+	flex-direction: column;
+	padding: 4px;
+	width: 20vw;
+	text-align: center;
+	margin: auto;
+}
