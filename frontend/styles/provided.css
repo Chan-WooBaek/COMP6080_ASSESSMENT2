@@ -43,6 +43,7 @@ html, body {
 		"Private Message Message";
 	width: 100%;
 	height: 100vh;
+	overflow: hidden;
 }
 
 .channelsPublic {
@@ -56,13 +57,18 @@ html, body {
 .channelInfo {
 	grid-area: Info;
 	white-space: pre-line;
-	line-height: 15px;
+	line-height: 13px;
 }
 
 .channelMessage {
 	grid-area: Message;
 	white-space: pre-line;
-	line-height: 15px;
+	line-height: 30px;
+}
+
+.messageView {
+	overflow: scroll;
+	height: 45vh;
 }
 
 .user {
@@ -105,6 +111,18 @@ html, body {
 	display: none;
 	position: absolute;
 	background-color: green;
+	align-self: center;
+	flex-direction: column;
+	padding: 4px;
+	width: 20vw;
+	text-align: center;
+	margin: auto;
+}
+
+.leftPopup {
+	display: none;
+	position: absolute;
+	background-color: yellow;
 	align-self: center;
 	flex-direction: column;
 	padding: 4px;

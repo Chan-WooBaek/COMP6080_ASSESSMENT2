@@ -4,6 +4,7 @@ import { fileToDataUrl } from './helpers.js';
 import * as auth from './auth.js';
 import * as channel from './channels.js';
 import * as helper from './helpers.js';
+import * as message from './messages.js';
 
 console.log('Let\'s go!');
 
@@ -62,6 +63,8 @@ document.getElementById("channelCreate").addEventListener("click", (event) => {
 // Submit button pressed for new channel form
 document.getElementById("newChannelSubmit").addEventListener("click", (event) => {
 	channel.createChannel(TOKEN);
+	document.getElementById("channelCreateForm").style.display = "none";
+	channel.updateChannelListShow(TOKEN, USERID);
 });
 
 // Close button pressed for new channel form
@@ -81,7 +84,8 @@ document.getElementById("editChannelButton").addEventListener("click", (event) =
 document.getElementById("editChannelSubmit").addEventListener("click", (event) => {
 	channel.editChannel(TOKEN);
 	channel.updateChannelListShow(TOKEN, USERID);
-	channel.updateChannelInfoScreen(TOKEN);
+	channel.updateChannelInfoScreen(TOKEN, channel.getCurrentChannelId());
+	document.getElementById("channelEditForm").style.display = "none";
 });
 
 // Close button pressed for edit channel form
@@ -103,4 +107,18 @@ document.getElementById("joinCloseButton").addEventListener("click", (event) => 
 // Leave Channel button pressed
 document.getElementById("leaveChannelButton").addEventListener("click", (event) => {
 	channel.leaveChannel(TOKEN);
+	channel.defaultChannelPage();
 });
+
+// Close Leave Channel Popup
+document.getElementById("leftChannelClose").addEventListener("click", (event) => {
+	document.getElementById("leftPopup").style.display = "none";
+});
+
+document.getElementById("messageText").addEventListener("scroll", (event) => {
+    if (document.getElementById("messageText").scrollHeight - document.getElementById("messageText").scrollTop === document.getElementById("messageText").clientHeight) {
+		console.log("recognised bottom");
+	}
+});
+
+

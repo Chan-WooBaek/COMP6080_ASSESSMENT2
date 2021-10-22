@@ -1,4 +1,6 @@
 import * as helper from './helpers.js';
+import * as message from './messages.js';
+
 var currentChannelId = false;
 
 export function updateChannelListShow(TOKEN, USERID) {
@@ -32,6 +34,10 @@ export function addChannelButton(value, isPrivate, TOKEN, channelId) {
 			document.getElementById("leaveChannelButton").style.display = "flex";
 			currentChannelId = channelId;
 			updateChannelInfoScreen(TOKEN, channelId);
+			loadMessages(TOKEN, channelId);
+		})
+		.then(data => {
+			
 		})
 		// If not a member
 		.catch(data => {
@@ -72,14 +78,16 @@ export function editChannel(TOKEN) {
 		description: document.getElementById("editChannelDescription").value,
 	}
 	helper.myFetch('PUT', `channel/${currentChannelId}`, TOKEN, body)
-
+	.then(data => {
+		
+	})
 }
 
 export function updateChannelInfoScreen(TOKEN, channelId) {
 
 	helper.myFetch('GET', `channel/${channelId}`, TOKEN)
 	.then(data => {
-		var date = new Date(data['createdAt']);
+		var date = getUserDate(new Date(data['createdAt']));
 		let newString = `Channel Name: ${data['name']}\n
 		Description: ${data['description']}\n
 		Private: ${data['private']}\n
@@ -89,13 +97,6 @@ export function updateChannelInfoScreen(TOKEN, channelId) {
 	})
 	.then(data => {
 		document.getElementById("infoText").textContent += `\nCreator: ${data['name']}`;
-		return helper.myFetch('GET', `message/${channelId}?start=0`, TOKEN);
-	})
-	.then(data => {
-		document.getElementById("messageText").textContent = '';
-		for (let i=0; i < data['messages'].length; i++) {
-			document.getElementById("messageText").textContent += `${data['messages'][i]['message']}\n`;
-		}
 	})
 }
 
@@ -103,16 +104,56 @@ export function getCurrentChannelId() {
 	return currentChannelId;
 }
 
+export function getUserDate(date) {
+	var day = date.getDate();
+	var month = date.getMonth();
+	var year = date.getFullYear();
+	var hour = String(date.getHours()).padStart(2,'0');
+	var minutes = String(date.getMinutes()).padStart(2,'0');
+	return `Time ${hour}:${minutes} | Date ${day}/${month}/${year}`;
+}
+
 export function joinChannel(TOKEN) {
 	helper.myFetch('POST', `channel/${getCurrentChannelId()}/join`, TOKEN)
 	.then(data => {
 		console.log("Joined Channel");
+		updateChannelInfoScreen(TOKEN, getCurrentChannelId());
+		document.getElementById("editChannelButton").style.display = "flex";
+		document.getElementById("leaveChannelButton").style.display = "flex";
 	})
 }
 
 export function leaveChannel(TOKEN) {
-	helper.myFetch('POST', `channel/${getCurrentChannelId()}/leave`, TOKEN)
+	helper.myFetch('GET', `channel/${getCurrentChannelId()}`, TOKEN)
 	.then(data => {
-		console.log("Left Channel");
+		document.getElementById("leftText").textContent = `Left Channel ${data['name']}`;
+		document.getElementById("leftPopup").style.display = "flex";
+		return helper.myFetch('POST', `channel/${getCurrentChannelId()}/leave`, TOKEN)
 	})
+	.then(data => {
+		console.log("left channel");
+	})
+}
+
+export function defaultChannelPage() {
+	document.getElementById("infoText").textContent = "Choose a channel to view channel info";
+	document.getElementById("messageText").textContent = "Choose a channel to view channel message";
+	document.getElementById("editChannelButton").style.display = "none";
+	document.getElementById("leaveChannelButton").style.display = "none";
+}
+
+export function loadMessages(TOKEN, channelId) {
+    helper.myFetch('GET', `message/${channelId}?start=0`, TOKEN)
+    .then(data => {
+        document.getElementById("messageText").textContent = '';
+		
+        for (let i=0; i < data['messages'].length; i++) {
+            const textbox = document.createElement("div");
+			textbox.textContent = data['messages'][i]["sender"];
+			textbox.textContent += getUserDate(new Date(data['messages'][i]["sentAt"]));
+            textbox.textContent += `\n${data['messages'][i]['message']}`;
+            document.getElementById("messageText").appendChild(textbox);
+        }
+		
+    })
 }

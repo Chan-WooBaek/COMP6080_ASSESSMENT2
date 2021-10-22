@@ -43,23 +43,30 @@
 		<p>&copy; Slackr</p>
 	</div>
 	<div class="loggedIn" id="loggedIn">
-		<div class="channelsPublic">Public Channels
+		<div class="channelsPublic">
+			<h1>Public Channels</h1>
 			<p id="publicChannelList"></p>
 		</div>
-		<div class="channelInfo"><p>Channel Info</p> 
+		<div class="channelInfo">
+			<h1>Channel Info</h1> 
 			<p id="infoText">Choose a channel to view channel info</p>
-			<input type="button" class= "editChannelButton" id="editChannelButton" value="Edit channel">
+			<input type="button" class="editChannelButton" id="editChannelButton" value="Edit channel">
 			<input type="button" class="leaveChannelButton" id="leaveChannelButton" value="Leave channel">
 		</div>
-		<div class="user">User
+		<div class="user">
+			<h1>User</h1>
 			<input type="button" id="channelCreate" value="Create New Channel">
 		</div>
-		<div class="channelsPrivate">Private Channels
+		<div class="channelsPrivate">
+			<h1>Private Channels</h1>
 			<p id="privateChannelList"></p>
 		</div>
-		<div class="channelMessage">Channel Message
-			<p id="messageText">Choose a channel to view channel message</p>
+		<div class="channelMessage" id="channelMessage">
+			<h1>Channel Message</h1>
+			<div class="messageView" id="messageText">Choose a channel to view channel message</div>
+			<input type="textarea" id="messageBox">
 		</div>
+		
 		<div class="channelCreateForm" id="channelCreateForm">
 			<form>
 				<h1 id="formCreateTitle"></h1>
@@ -82,8 +89,12 @@
 		</div>
 		<div class="joinPopup" id="joinPopup">
 			<h1 id="joinText">Join this channel?</h1>
-			<input type="button" id="joinJoinButton" value="join">
-			<input type="button" id="joinCloseButton" value="close">
+			<input type="button" id="joinJoinButton" value="Join">
+			<input type="button" id="joinCloseButton" value="Close">
+		</div>
+		<div class="leftPopup" id="leftPopup">
+			<h1 id="leftText"></h1>
+			<input type="button" id="leftChannelClose" value="Close">
 		</div>
 	</div>
 </main>
