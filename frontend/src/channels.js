@@ -114,6 +114,18 @@ export function getUserDate(date) {
 	return `Time ${hour}:${minutes} | Date ${day}/${month}/${year}`;
 }
 
+export function getTime(date) {
+	var hour = String(date.getHours()).padStart(2,'0');
+	var minutes = String(date.getMinutes()).padStart(2,'0');
+	return `${hour}:${minutes}`;
+}
+
+export function getDate(date) {
+	var day = date.getDate();
+	var month = date.getMonth();
+	return `${day}/${month}`;
+}
+
 export function joinChannel(TOKEN) {
 	helper.myFetch('POST', `channel/${getCurrentChannelId()}/join`, TOKEN)
 	.then(data => {
@@ -148,23 +160,38 @@ export function loadMessages(TOKEN, channelId) {
 	helper.removeAllChildNodes(document.getElementById("messageText"));
     helper.myFetch('GET', `message/${channelId}?start=0`, TOKEN)
     .then(data => {
-
-		const messages = data['messages'].reverse();
+		const messages = data['messages'];
 		for (let i=0; i < messages.length; i++) {
 			const textbox = document.createElement("div");
-			// Message info
-			textbox.textContent = messages[i]["sender"];
-			textbox.textContent += getUserDate(new Date(messages[i]["sentAt"]));
+			textbox.classList.add("textarea");
+			// Message sender
+			const sender = document.createElement("div");
+			getNameFromId(messages[i]["sender"], TOKEN, channelId)
+			.then(data => {
+				sender.textContent = data;
+			})
+			// Message sent time
+			const time = document.createElement("div");
+			time.textContent = getTime(new Date(messages[i]["sentAt"]));
+			// Message sent date
+			const date = document.createElement("div");
+			date.textContent = getDate(new Date(messages[i]["sentAt"]));
 			// Message content
+			var spanWrapper = document.createElement("span");
+			
 			var content = document.createElement("input");
-			content.type = "text"
+			spanWrapper.append(content);
+			content.type = "textbox"
 			content.value = messages[i]['message'];
-			content.id = messages[i]['id'];
+			content.id = `text${messages[i]['id']}`;
 			content.disabled = true;
+			content.classList.add("messageOutputBox");
 			content.addEventListener("blur", (event) => {
-				console.log('blur');
-				document.getElementById(messages[i]["id"]).disabled = true;
-				editMessages(messages[i]['id'], TOKEN, channelId)
+				document.getElementById(`text${messages[i]['id']}`).disabled = true;
+				if(messages[i]['message'] !== document.getElementById(`text${messages[i]['id']}`).value) {
+					editMessages(messages[i]['id'], TOKEN, channelId);
+				};
+				
 			})
 			// Delete message button
 			var delButton = helper.addIcon("bi-trash-fill");
@@ -172,23 +199,45 @@ export function loadMessages(TOKEN, channelId) {
 			delButton.addEventListener("click", (event) => {
 				deleteMessages(messages[i]['id'], TOKEN, channelId);
 			});
-			// Edit channel button
-			var editButton =  helper.addIcon("bi-pencil-fill");
+			// Edit message button
+			if(messages[i]['edited'] === true) {
+				var editButton =  helper.addIcon("bi-pencil-fill");
+				textbox.prepend(`\nEdited at:${getUserDate(new Date(messages[i]['editedAt']))}`);
+			}
+			else var editButton =  helper.addIcon("bi-pencil");
+			
 			editButton.classList.add("icon");
+			editButton.id = `edit${messages[i]['id']}`;
 			editButton.addEventListener("click", (event) => {
-				event.preventDefault();
-				event.stopPropagation();
-				const msg = document.getElementById(messages[i]["id"]);
+				const msg = document.getElementById(`text${messages[i]['id']}`);
 				msg.disabled = false;
 				msg.focus();
-				
 			})
 
-			textbox.append(editButton);
-			textbox.append(delButton);
-			textbox.append(content);
+			// React message button
+			var reactButton = helper.addIcon("bi-emoji-smile");
+			reactButton.classList.add("icon");
+			reactButton.addEventListener("click", (event) => {
+				document.getElementById("messageBox").value += "react";
+			});
+
+			// Pin message button
+			var pinButton = helper.addIcon("bi-pin-angle");
+			pinButton.classList.add("icon");
+			pinButton.addEventListener("click", (event) => {
+				console.log("pin");
+			});
+
+			textbox.prepend(pinButton);
+			textbox.prepend(reactButton);
+			textbox.prepend(delButton);
+			textbox.prepend(editButton);
+			textbox.prepend(content);
+			textbox.prepend(date);
+			textbox.prepend(time);
+			textbox.prepend(sender);
 			
-			document.getElementById("messageText").appendChild(textbox);
+			document.getElementById("messageText").prepend(textbox);
 		}
         
 		document.getElementById("messageText").scrollTo(0,document.getElementById("messageText").scrollHeight);
@@ -201,6 +250,13 @@ export function getMESSAGECOUNT() {
 	return MESSAGECOUNT;
 }
 
+export function getNameFromId(userId, TOKEN, channelId) {
+	return helper.myFetch('GET', `user/${userId}`, TOKEN)
+	.then(data => {
+		return(data['name']);
+	})
+}
+
 
 export function updateMessages(TOKEN, channelId) {
 	var messageText = document.getElementById("messageText");
@@ -210,19 +266,65 @@ export function updateMessages(TOKEN, channelId) {
         const messages = data['messages'];
         for (let i=0; i < messages.length; i++) {
             const textbox = document.createElement("div");
-			// Message Info
+			textbox.classList.add("textbox");
+			// Message info
 			textbox.textContent = messages[i]["sender"];
 			textbox.textContent += getUserDate(new Date(messages[i]["sentAt"]));
-            textbox.textContent += `\n${messages[i]['message']}`;
+			// Message content
+			var content = document.createElement("input");
+			content.type = "text"
+			content.value = messages[i]['message'];
+			content.id = `text${messages[i]['id']}`;
+			content.disabled = true;
+			content.addEventListener("blur", (event) => {
+				document.getElementById(`text${messages[i]['id']}`).disabled = true;
+				if(messages[i]['message'] !== document.getElementById(`text${messages[i]['id']}`).value) {
+					console.log('edited');
+					editMessages(messages[i]['id'], TOKEN, channelId);
+				};
+				
+			})
 			// Delete message button
-			var delButton = document.createElement("input");
-			delButton = helper.addIcon(delButton,"bi-trash-fill");
-			delButton.type = "button";
-			delButton.name = "delButton";
+			var delButton = helper.addIcon("bi-trash-fill");
+			delButton.classList.add("icon");
 			delButton.addEventListener("click", (event) => {
 				deleteMessages(messages[i]['id'], TOKEN, channelId);
 			});
-			textbox.prepend(delButton);
+			// Edit message button
+			if(messages[i]['edited'] === true) {
+				var editButton =  helper.addIcon("bi-pencil-fill");
+				textbox.append(`\nEdited at:${getUserDate(new Date(messages[i]['editedAt']))}`);
+			}
+			else var editButton =  helper.addIcon("bi-pencil");
+			
+			editButton.classList.add("icon");
+			editButton.id = `edit${messages[i]['id']}`;
+			editButton.addEventListener("click", (event) => {
+				const msg = document.getElementById(`text${messages[i]['id']}`);
+				msg.disabled = false;
+				msg.focus();
+			})
+
+			// React message button
+			var reactButton = helper.addIcon("bi-emoji-smile");
+			reactButton.classList.add("icon");
+			reactButton.addEventListener("click", (event) => {
+				console.log("react");
+			});
+
+			// Pin message button
+			var pinButton = helper.addIcon("bi-pin-angle");
+			pinButton.classList.add("icon");
+			pinButton.addEventListener("click", (event) => {
+				console.log("pin");
+			});
+
+			textbox.append(content);
+			textbox.append(editButton);
+			textbox.append(delButton);
+			textbox.append(reactButton);
+			textbox.append(pinButton);
+
             document.getElementById("messageText").prepend(textbox);
         }
 		MESSAGECOUNT += 25;
@@ -255,12 +357,13 @@ export function deleteMessages(messageId, TOKEN, channelId) {
 
 export function editMessages(messageId, TOKEN, channelId) {
 	const body = {
-		message: document.getElementById(messageId).value,
+		message: document.getElementById(`text${messageId}`).value,
 		image: "",
 	}
 	helper.myFetch('PUT', `message/${channelId}/${messageId}`, TOKEN, body)
 	.then( data => {
 		// Show it was edited and when
+		loadMessages(TOKEN, channelId);
 	})
 	.catch((data) => {
 		console.log(data);
