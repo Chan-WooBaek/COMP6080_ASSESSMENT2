@@ -1,7 +1,7 @@
 import * as helper from './helpers.js';
-import * as message from './messages.js';
 
 var currentChannelId = false;
+let MESSAGECOUNT = 0;
 
 export function updateChannelListShow(TOKEN, USERID) {
 	document.getElementById("publicChannelList").textContent = "";
@@ -26,6 +26,7 @@ export function addChannelButton(value, isPrivate, TOKEN, channelId) {
     element.type = "button";
 	element.value = value;
 	element.name = value;
+	element.style="border: none; background: none; padding: 0;"
 	element.onclick = function() {
 		helper.myFetch('GET', `channel/${channelId}`, TOKEN)
 		// If a member
@@ -143,17 +144,125 @@ export function defaultChannelPage() {
 }
 
 export function loadMessages(TOKEN, channelId) {
+	MESSAGECOUNT = 0;
+	helper.removeAllChildNodes(document.getElementById("messageText"));
     helper.myFetch('GET', `message/${channelId}?start=0`, TOKEN)
     .then(data => {
-        document.getElementById("messageText").textContent = '';
-		
-        for (let i=0; i < data['messages'].length; i++) {
-            const textbox = document.createElement("div");
-			textbox.textContent = data['messages'][i]["sender"];
-			textbox.textContent += getUserDate(new Date(data['messages'][i]["sentAt"]));
-            textbox.textContent += `\n${data['messages'][i]['message']}`;
-            document.getElementById("messageText").appendChild(textbox);
-        }
-		
+
+		const messages = data['messages'].reverse();
+		for (let i=0; i < messages.length; i++) {
+			const textbox = document.createElement("div");
+			// Message info
+			textbox.textContent = messages[i]["sender"];
+			textbox.textContent += getUserDate(new Date(messages[i]["sentAt"]));
+			// Message content
+			var content = document.createElement("input");
+			content.type = "text"
+			content.value = messages[i]['message'];
+			content.id = messages[i]['id'];
+			content.disabled = true;
+			content.addEventListener("blur", (event) => {
+				console.log('blur');
+				document.getElementById(messages[i]["id"]).disabled = true;
+				editMessages(messages[i]['id'], TOKEN, channelId)
+			})
+			// Delete message button
+			var delButton = helper.addIcon("bi-trash-fill");
+			delButton.classList.add("icon");
+			delButton.addEventListener("click", (event) => {
+				deleteMessages(messages[i]['id'], TOKEN, channelId);
+			});
+			// Edit channel button
+			var editButton =  helper.addIcon("bi-pencil-fill");
+			editButton.classList.add("icon");
+			editButton.addEventListener("click", (event) => {
+				event.preventDefault();
+				event.stopPropagation();
+				const msg = document.getElementById(messages[i]["id"]);
+				msg.disabled = false;
+				msg.focus();
+				
+			})
+
+			textbox.append(editButton);
+			textbox.append(delButton);
+			textbox.append(content);
+			
+			document.getElementById("messageText").appendChild(textbox);
+		}
+        
+		document.getElementById("messageText").scrollTo(0,document.getElementById("messageText").scrollHeight);
+		MESSAGECOUNT += 25;
     })
+
+}
+
+export function getMESSAGECOUNT() {
+	return MESSAGECOUNT;
+}
+
+
+export function updateMessages(TOKEN, channelId) {
+	var messageText = document.getElementById("messageText");
+	var oldHeight = messageText.scrollHeight;
+    helper.myFetch('GET', `message/${channelId}?start=${MESSAGECOUNT}`, TOKEN)
+    .then(data => {
+        const messages = data['messages'];
+        for (let i=0; i < messages.length; i++) {
+            const textbox = document.createElement("div");
+			// Message Info
+			textbox.textContent = messages[i]["sender"];
+			textbox.textContent += getUserDate(new Date(messages[i]["sentAt"]));
+            textbox.textContent += `\n${messages[i]['message']}`;
+			// Delete message button
+			var delButton = document.createElement("input");
+			delButton = helper.addIcon(delButton,"bi-trash-fill");
+			delButton.type = "button";
+			delButton.name = "delButton";
+			delButton.addEventListener("click", (event) => {
+				deleteMessages(messages[i]['id'], TOKEN, channelId);
+			});
+			textbox.prepend(delButton);
+            document.getElementById("messageText").prepend(textbox);
+        }
+		MESSAGECOUNT += 25;
+		var newHeight = messageText.scrollHeight;
+		messageText.scrollTop = newHeight - oldHeight;
+    })
+	
+}
+
+export function sendMessages(TOKEN, channelId) {
+	if (document.getElementById("messageBox").value.length === 0 || document.getElementById("messageBox").value.indexOf(' ') === 0) {
+		return;
+	}
+	const body = {
+		message: document.getElementById("messageBox").value,
+		image: ""
+	}
+	helper.myFetch('POST', `message/${channelId}`, TOKEN, body)
+	.then(data => {
+		loadMessages(TOKEN, getCurrentChannelId());
+	})
+}
+
+export function deleteMessages(messageId, TOKEN, channelId) {
+	helper.myFetch('DELETE', `message/${channelId}/${messageId}`, TOKEN)
+	.then( data => {
+		loadMessages(TOKEN, getCurrentChannelId());
+	})
+}
+
+export function editMessages(messageId, TOKEN, channelId) {
+	const body = {
+		message: document.getElementById(messageId).value,
+		image: "",
+	}
+	helper.myFetch('PUT', `message/${channelId}/${messageId}`, TOKEN, body)
+	.then( data => {
+		// Show it was edited and when
+	})
+	.catch((data) => {
+		console.log(data);
+	})
 }

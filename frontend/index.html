@@ -8,6 +8,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<!-- You can add your styles and scripts here -->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.1/font/bootstrap-icons.css">
 	<link rel="stylesheet" type="text/css" media="screen" href="styles/provided.css" />
 	<script type="module" src="src/helpers.js"></script>
 </head>
@@ -48,7 +49,7 @@
 			<p id="publicChannelList"></p>
 		</div>
 		<div class="channelInfo">
-			<h1>Channel Info</h1> 
+			 
 			<p id="infoText">Choose a channel to view channel info</p>
 			<input type="button" class="editChannelButton" id="editChannelButton" value="Edit channel">
 			<input type="button" class="leaveChannelButton" id="leaveChannelButton" value="Leave channel">
@@ -62,9 +63,10 @@
 			<p id="privateChannelList"></p>
 		</div>
 		<div class="channelMessage" id="channelMessage">
-			<h1>Channel Message</h1>
+			
 			<div class="messageView" id="messageText">Choose a channel to view channel message</div>
 			<input type="textarea" id="messageBox">
+			<input type="button" id="messageSend" value="Send">
 		</div>
 		
 		<div class="channelCreateForm" id="channelCreateForm">

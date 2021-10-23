@@ -4,7 +4,6 @@ import { fileToDataUrl } from './helpers.js';
 import * as auth from './auth.js';
 import * as channel from './channels.js';
 import * as helper from './helpers.js';
-import * as message from './messages.js';
 
 console.log('Let\'s go!');
 
@@ -115,10 +114,20 @@ document.getElementById("leftChannelClose").addEventListener("click", (event) =>
 	document.getElementById("leftPopup").style.display = "none";
 });
 
+// While scrolling, if you reach the top
 document.getElementById("messageText").addEventListener("scroll", (event) => {
-    if (document.getElementById("messageText").scrollHeight - document.getElementById("messageText").scrollTop === document.getElementById("messageText").clientHeight) {
-		console.log("recognised bottom");
+	event.stopPropagation();
+    if (document.getElementById("messageText").scrollTop === 0 && channel.getMESSAGECOUNT() !== 0) {
+		// Add new batch of messages
+		console.log("hitting top");
+		channel.updateMessages(TOKEN, channel.getCurrentChannelId());
 	}
 });
 
+// Send message from textbox
+document.getElementById("messageSend").addEventListener("click", (event) => {
+	event.stopPropagation();
+	channel.sendMessages(TOKEN, channel.getCurrentChannelId());
+	document.getElementById("messageBox").value = '';
+})
 

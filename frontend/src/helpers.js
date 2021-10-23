@@ -59,3 +59,16 @@ export const myFetch = (method, path, token, body) => {
 		.catch((err) => console.log(err));
 	});
 }
+
+export function removeAllChildNodes(parent) {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+}
+
+export function addIcon(icon) {
+	var i = document.createElement("i");
+	i.classList.add("bi");
+	i.classList.add(icon);
+	return i;
+}

@@ -1,4 +1,6 @@
-
+.icon:hover {
+	cursor: pointer;
+}
 /* base styles, feel free to edit */
 html, body {
 	margin: 0;
@@ -69,6 +71,15 @@ html, body {
 .messageView {
 	overflow: scroll;
 	height: 45vh;
+	flex-direction: column-reverse;
+}
+.messageView::-webkit-scrollbar {
+    width: 15px;
+}
+
+.messageView::-webkit-scrollbar-thumb {
+    border-radius: 30px;
+    border: 3px solid #B6C5CE;
 }
 
 .user {
