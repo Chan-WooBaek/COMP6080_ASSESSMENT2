@@ -131,3 +131,25 @@ document.getElementById("messageSend").addEventListener("click", (event) => {
 	document.getElementById("messageBox").value = '';
 })
 
+// Reactions are given the call to store in backend
+document.querySelectorAll('.EMJ').forEach((btn) => {
+	btn.oncontextmenu = function(event) {
+		event.preventDefault();
+	}
+	
+	btn.addEventListener("click", (event) => {
+		channel.addReact(btn.value, TOKEN);
+		channel.loadMessages(TOKEN, channel.getCurrentChannelId());
+	})
+	btn.addEventListener("auxclick", (event) => {
+		event.preventDefault();
+		channel.unReact(btn.value, TOKEN);
+		channel.loadMessages(TOKEN, channel.getCurrentChannelId());
+	})
+})
+
+// Open pin messages
+document.getElementById("give").addEventListener("click", (event) => {
+	event.preventDefault();
+	console.log("open pin msgs");
+})

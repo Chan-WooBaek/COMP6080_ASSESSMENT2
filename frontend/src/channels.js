@@ -2,7 +2,7 @@ import * as helper from './helpers.js';
 
 var currentChannelId = false;
 let MESSAGECOUNT = 0;
-var prevDate = null;
+var currentMessageId;
 
 export function updateChannelListShow(TOKEN, USERID) {
 	document.getElementById("publicChannelList").textContent = "";
@@ -104,6 +104,10 @@ export function updateChannelInfoScreen(TOKEN, channelId) {
 
 export function getCurrentChannelId() {
 	return currentChannelId;
+}
+
+export function getCurrentMessageId() {
+	return currentMessageId;
 }
 
 export function getUserDate(date) {
@@ -227,6 +231,7 @@ export function loadMessages(TOKEN, channelId) {
 			editButton.classList.add("icon");
 			editButton.id = `edit${messages[i]['id']}`;
 			editButton.addEventListener("click", (event) => {
+				currentMessageId = messages[i]["id"];
 				const msg = document.getElementById(`text${messages[i]['id']}`);
 				msg.contentEditable = true;
 				msg.focus();
@@ -236,29 +241,45 @@ export function loadMessages(TOKEN, channelId) {
 			var reactButton = helper.addIcon("bi-emoji-smile");
 			reactButton.classList.add("icon");
 			reactButton.addEventListener("click", (event) => {
+				currentMessageId = messages[i]["id"];
 				$('#Modal').modal('show');
 			});
 
 			// Pin message button
-			var pinButton = helper.addIcon("bi-pin-angle");
+			if (messages[i]['pinned']) {
+				var pinButton = helper.addIcon("bi-pin-angle-fill");
+			} else var pinButton = helper.addIcon("bi-pin-angle");
 			pinButton.classList.add("icon");
+			
 			pinButton.addEventListener("click", (event) => {
-				console.log("pin");
+				currentMessageId = messages[i]["id"];
+				pinCurrentMessage(TOKEN);
+				loadMessages(TOKEN, channelId);
 			});
+
+			// Show react div
+			var reactDiv = document.createElement("div");
+			reactDiv.classList.add("reactDiv");
+			reactDiv.id = `react${messages[i]['id']}`;
+			
+			messages[i]['reacts'].map(react => {
+				reactDiv.append(react['react']);
+			})
 
 			buttonBox.appendChild(editButton);
 			buttonBox.appendChild(reactButton);
 			buttonBox.appendChild(delButton);
 			buttonBox.appendChild(pinButton);
-			textbox.prepend(buttonBox);
-			textbox.prepend(content);
-			textbox.prepend(sender);
-			textbox.prepend(time);
-
+			textbox.append(time);
+			textbox.append(sender);
+			textbox.append(content);
+			textbox.append(reactDiv);
+			textbox.append(buttonBox);
 			
 			document.getElementById("messageText").prepend(textbox);
 		}
-        
+
+		// Scroll to bottom
 		document.getElementById("messageText").scrollTo(0,document.getElementById("messageText").scrollHeight);
 		MESSAGECOUNT += 25;
     })
@@ -337,6 +358,7 @@ export function updateMessages(TOKEN, channelId) {
 			editButton.classList.add("icon");
 			editButton.id = `edit${messages[i]['id']}`;
 			editButton.addEventListener("click", (event) => {
+				currentMessageId = messages[i]["id"];
 				const msg = document.getElementById(`text${messages[i]['id']}`);
 				msg.contentEditable = true;
 				msg.focus();
@@ -346,25 +368,36 @@ export function updateMessages(TOKEN, channelId) {
 			var reactButton = helper.addIcon("bi-emoji-smile");
 			reactButton.classList.add("icon");
 			reactButton.addEventListener("click", (event) => {
-				console.log("react");
+				currentMessageId = messages[i]["id"];
+				$('#Modal').modal('show');
 			});
 
 			// Pin message button
 			var pinButton = helper.addIcon("bi-pin-angle");
 			pinButton.classList.add("icon");
 			pinButton.addEventListener("click", (event) => {
+				currentMessageId = messages[i]["id"];
 				console.log("pin");
 			});
+
+			// React result div
+			var reactDiv = document.createElement("div");
+			reactDiv.classList.add("reactDiv");
+			reactDiv.id = `react${messages[i]['id']}`;
+			
+			messages[i]['reacts'].map(react => {
+				reactDiv.append(react['react']);
+			})
 
 			buttonBox.appendChild(editButton);
 			buttonBox.appendChild(reactButton);
 			buttonBox.appendChild(delButton);
 			buttonBox.appendChild(pinButton);
-			textbox.prepend(buttonBox);
-			textbox.prepend(content);
-			textbox.prepend(sender);
-			textbox.prepend(time);
-
+			textbox.append(time);
+			textbox.append(sender);
+			textbox.append(content);
+			textbox.append(reactDiv);
+			textbox.append(buttonBox);
 			
 			document.getElementById("messageText").prepend(textbox);
         }
@@ -409,5 +442,39 @@ export function editMessages(messageId, TOKEN, channelId) {
 	})
 	.catch((data) => {
 		console.log(data);
+	})
+}
+
+export function addReact(reactValue, TOKEN) {
+	const body = {
+		react: reactValue
+	}
+	helper.myFetch("POST", `message/react/${getCurrentChannelId()}/${getCurrentMessageId()}`, TOKEN, body)
+	.then(data => {
+		
+	})
+}
+
+export function unReact(reactValue, TOKEN) {
+	const body = {
+		react: reactValue
+	}
+	helper.myFetch("POST", `message/unreact/${getCurrentChannelId()}/${getCurrentMessageId()}`, TOKEN, body)
+	.then(data => {
+		
+	})
+}
+
+export function pinCurrentMessage(TOKEN) {
+	helper.myFetch("POST", `message/pin/${getCurrentChannelId()}/${getCurrentMessageId()}`, TOKEN)
+	.then(data => {
+
+	})
+}
+
+export function unpinCurrentMessage(TOKEN) {
+	helper.myFetch("POST", `message/unpin/${getCurrentChannelId()}/${getCurrentMessageId()}`, TOKEN)
+	.then(data => {
+
 	})
 }

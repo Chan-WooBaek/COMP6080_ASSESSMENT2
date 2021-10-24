@@ -256,3 +256,12 @@ html, body {
 	background-color: rgba(0,0,0,0);
 	border: none;
 }
+
+.reactDiv {
+	width: fit-content;
+	border-radius: 12px;
+}
+
+.pinnedMessages {
+	text-align: center;
+}

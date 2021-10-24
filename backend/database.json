@@ -69,6 +69,28 @@
       ],
       "messages": [
         {
+          "id": 113,
+          "message": "35",
+          "image": "",
+          "sender": 65577,
+          "sentAt": "2021-10-24T17:20:56.788Z",
+          "edited": false,
+          "editedAt": null,
+          "pinned": false,
+          "reacts": []
+        },
+        {
+          "id": 112,
+          "message": "34",
+          "image": "",
+          "sender": 65577,
+          "sentAt": "2021-10-24T17:19:08.335Z",
+          "edited": false,
+          "editedAt": null,
+          "pinned": false,
+          "reacts": []
+        },
+        {
           "id": 110,
           "message": "33",
           "image": "",
@@ -86,7 +108,7 @@
           "sender": 65577,
           "sentAt": "2021-10-23T14:30:00.201Z",
           "edited": true,
-          "editedAt": "2021-10-24T08:19:09.974Z",
+          "editedAt": "2021-10-24T17:23:05.858Z",
           "pinned": false,
           "reacts": []
         },
@@ -131,7 +153,7 @@
           "sentAt": "2021-10-23T12:31:09.065Z",
           "edited": true,
           "editedAt": "2021-10-23T14:03:34.343Z",
-          "pinned": false,
+          "pinned": true,
           "reacts": []
         },
         {
@@ -1024,5 +1046,5 @@
       "messages": []
     }
   },
-  "nextMessageId": 112
+  "nextMessageId": 114
 }
