@@ -2,6 +2,7 @@ import * as helper from './helpers.js';
 
 var currentChannelId = false;
 let MESSAGECOUNT = 0;
+var prevDate = null;
 
 export function updateChannelListShow(TOKEN, USERID) {
 	document.getElementById("publicChannelList").textContent = "";
@@ -114,6 +115,15 @@ export function getUserDate(date) {
 	return `Time ${hour}:${minutes} | Date ${day}/${month}/${year}`;
 }
 
+export function getEditDate(date) {
+	var day = date.getDate();
+	var month = date.getMonth();
+	var year = date.getFullYear();
+	var hour = String(date.getHours()).padStart(2,'0');
+	var minutes = String(date.getMinutes()).padStart(2,'0');
+	return `${hour}:${minutes} | ${day}/${month}/${year}`;
+}
+
 export function getTime(date) {
 	var hour = String(date.getHours()).padStart(2,'0');
 	var minutes = String(date.getMinutes()).padStart(2,'0');
@@ -158,6 +168,8 @@ export function defaultChannelPage() {
 export function loadMessages(TOKEN, channelId) {
 	MESSAGECOUNT = 0;
 	helper.removeAllChildNodes(document.getElementById("messageText"));
+	document.getElementById("messageBox").style = "display: inline-flex";
+	document.getElementById("messageSend").style = "display: inline-flex";
     helper.myFetch('GET', `message/${channelId}?start=0`, TOKEN)
     .then(data => {
 		const messages = data['messages'];
@@ -172,29 +184,32 @@ export function loadMessages(TOKEN, channelId) {
 			})
 			// Message sent time
 			const time = document.createElement("div");
-			time.textContent = getTime(new Date(messages[i]["sentAt"]));
-			// Message sent date
 			const date = document.createElement("div");
+			const hourMin = document.createElement("div");
+			date.style = "float: right"
 			date.textContent = getDate(new Date(messages[i]["sentAt"]));
+			time.classList.add("timeFormat");
+			hourMin.textContent = getTime(new Date(messages[i]["sentAt"]));
+			time.appendChild(date);
+			time.appendChild(hourMin);
 			// Message content
-			var spanWrapper = document.createElement("span");
-			
-			var content = document.createElement("input");
-			spanWrapper.append(content);
-			content.type = "textbox"
-			content.value = messages[i]['message'];
+			var content = document.createElement("div");
+			content.append(messages[i]['message']);
 			content.id = `text${messages[i]['id']}`;
-			content.disabled = true;
 			content.classList.add("messageOutputBox");
 			content.addEventListener("blur", (event) => {
-				document.getElementById(`text${messages[i]['id']}`).disabled = true;
-				if(messages[i]['message'] !== document.getElementById(`text${messages[i]['id']}`).value) {
+				console.log(document.getElementById(`text${messages[i]['id']}`));
+				document.getElementById(`text${messages[i]['id']}`).contentEditable = false;
+				if(messages[i]['message'] !== document.getElementById(`text${messages[i]['id']}`).textContent) {
 					editMessages(messages[i]['id'], TOKEN, channelId);
 				};
 				
 			})
+			// Div to collect all buttons
+			var buttonBox = document.createElement("div");
+			buttonBox.classList.add("buttonBox");
 			// Delete message button
-			var delButton = helper.addIcon("bi-trash-fill");
+			var delButton = helper.addIcon("bi-trash");
 			delButton.classList.add("icon");
 			delButton.addEventListener("click", (event) => {
 				deleteMessages(messages[i]['id'], TOKEN, channelId);
@@ -202,7 +217,10 @@ export function loadMessages(TOKEN, channelId) {
 			// Edit message button
 			if(messages[i]['edited'] === true) {
 				var editButton =  helper.addIcon("bi-pencil-fill");
-				textbox.prepend(`\nEdited at:${getUserDate(new Date(messages[i]['editedAt']))}`);
+				var editedAt = document.createElement("div");
+				editedAt.style = "float: right";
+				editedAt.textContent =  `\nEdited at: ${getEditDate(new Date(messages[i]['editedAt']))}`;
+				buttonBox.append(editedAt);
 			}
 			else var editButton =  helper.addIcon("bi-pencil");
 			
@@ -210,7 +228,7 @@ export function loadMessages(TOKEN, channelId) {
 			editButton.id = `edit${messages[i]['id']}`;
 			editButton.addEventListener("click", (event) => {
 				const msg = document.getElementById(`text${messages[i]['id']}`);
-				msg.disabled = false;
+				msg.contentEditable = true;
 				msg.focus();
 			})
 
@@ -218,7 +236,7 @@ export function loadMessages(TOKEN, channelId) {
 			var reactButton = helper.addIcon("bi-emoji-smile");
 			reactButton.classList.add("icon");
 			reactButton.addEventListener("click", (event) => {
-				document.getElementById("messageBox").value += "react";
+				$('#Modal').modal('show');
 			});
 
 			// Pin message button
@@ -228,14 +246,15 @@ export function loadMessages(TOKEN, channelId) {
 				console.log("pin");
 			});
 
-			textbox.prepend(pinButton);
-			textbox.prepend(reactButton);
-			textbox.prepend(delButton);
-			textbox.prepend(editButton);
+			buttonBox.appendChild(editButton);
+			buttonBox.appendChild(reactButton);
+			buttonBox.appendChild(delButton);
+			buttonBox.appendChild(pinButton);
+			textbox.prepend(buttonBox);
 			textbox.prepend(content);
-			textbox.prepend(date);
-			textbox.prepend(time);
 			textbox.prepend(sender);
+			textbox.prepend(time);
+
 			
 			document.getElementById("messageText").prepend(textbox);
 		}
@@ -266,26 +285,41 @@ export function updateMessages(TOKEN, channelId) {
         const messages = data['messages'];
         for (let i=0; i < messages.length; i++) {
             const textbox = document.createElement("div");
-			textbox.classList.add("textbox");
-			// Message info
-			textbox.textContent = messages[i]["sender"];
-			textbox.textContent += getUserDate(new Date(messages[i]["sentAt"]));
+			textbox.classList.add("textarea");
+			// Message sender
+			const sender = document.createElement("div");
+			getNameFromId(messages[i]["sender"], TOKEN, channelId)
+			.then(data => {
+				sender.textContent = data;
+			})
+			// Message sent time
+			const time = document.createElement("div");
+			const date = document.createElement("div");
+			const hourMin = document.createElement("div");
+			date.style = "float: right"
+			date.textContent = getDate(new Date(messages[i]["sentAt"]));
+			time.classList.add("timeFormat");
+			hourMin.textContent = getTime(new Date(messages[i]["sentAt"]));
+			time.appendChild(date);
+			time.appendChild(hourMin);
 			// Message content
-			var content = document.createElement("input");
-			content.type = "text"
-			content.value = messages[i]['message'];
+			var content = document.createElement("div");
+			content.append(messages[i]['message']);
 			content.id = `text${messages[i]['id']}`;
-			content.disabled = true;
+			content.classList.add("messageOutputBox");
 			content.addEventListener("blur", (event) => {
-				document.getElementById(`text${messages[i]['id']}`).disabled = true;
-				if(messages[i]['message'] !== document.getElementById(`text${messages[i]['id']}`).value) {
-					console.log('edited');
+				console.log(document.getElementById(`text${messages[i]['id']}`));
+				document.getElementById(`text${messages[i]['id']}`).contentEditable = false;
+				if(messages[i]['message'] !== document.getElementById(`text${messages[i]['id']}`).textContent) {
 					editMessages(messages[i]['id'], TOKEN, channelId);
 				};
 				
 			})
+			// Div to collect all buttons
+			var buttonBox = document.createElement("div");
+			buttonBox.classList.add("buttonBox");
 			// Delete message button
-			var delButton = helper.addIcon("bi-trash-fill");
+			var delButton = helper.addIcon("bi-trash");
 			delButton.classList.add("icon");
 			delButton.addEventListener("click", (event) => {
 				deleteMessages(messages[i]['id'], TOKEN, channelId);
@@ -293,7 +327,10 @@ export function updateMessages(TOKEN, channelId) {
 			// Edit message button
 			if(messages[i]['edited'] === true) {
 				var editButton =  helper.addIcon("bi-pencil-fill");
-				textbox.append(`\nEdited at:${getUserDate(new Date(messages[i]['editedAt']))}`);
+				var editedAt = document.createElement("div");
+				editedAt.style = "float: right";
+				editedAt.textContent =  `\nEdited at: ${getEditDate(new Date(messages[i]['editedAt']))}`;
+				buttonBox.append(editedAt);
 			}
 			else var editButton =  helper.addIcon("bi-pencil");
 			
@@ -301,7 +338,7 @@ export function updateMessages(TOKEN, channelId) {
 			editButton.id = `edit${messages[i]['id']}`;
 			editButton.addEventListener("click", (event) => {
 				const msg = document.getElementById(`text${messages[i]['id']}`);
-				msg.disabled = false;
+				msg.contentEditable = true;
 				msg.focus();
 			})
 
@@ -319,13 +356,17 @@ export function updateMessages(TOKEN, channelId) {
 				console.log("pin");
 			});
 
-			textbox.append(content);
-			textbox.append(editButton);
-			textbox.append(delButton);
-			textbox.append(reactButton);
-			textbox.append(pinButton);
+			buttonBox.appendChild(editButton);
+			buttonBox.appendChild(reactButton);
+			buttonBox.appendChild(delButton);
+			buttonBox.appendChild(pinButton);
+			textbox.prepend(buttonBox);
+			textbox.prepend(content);
+			textbox.prepend(sender);
+			textbox.prepend(time);
 
-            document.getElementById("messageText").prepend(textbox);
+			
+			document.getElementById("messageText").prepend(textbox);
         }
 		MESSAGECOUNT += 25;
 		var newHeight = messageText.scrollHeight;
@@ -356,8 +397,9 @@ export function deleteMessages(messageId, TOKEN, channelId) {
 }
 
 export function editMessages(messageId, TOKEN, channelId) {
+	console.log(document.getElementById(`text${messageId}`).textContent);
 	const body = {
-		message: document.getElementById(`text${messageId}`).value,
+		message: document.getElementById(`text${messageId}`).textContent,
 		image: "",
 	}
 	helper.myFetch('PUT', `message/${channelId}/${messageId}`, TOKEN, body)

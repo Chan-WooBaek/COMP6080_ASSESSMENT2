@@ -45,7 +45,7 @@
 	</div>
 	<div class="loggedIn" id="loggedIn">
 		<div class="channelsPublic">
-			<h1>Public Channels</h1>
+			<h3>Public Channels</h3>
 			<p id="publicChannelList"></p>
 		</div>
 		<div class="channelInfo">
@@ -55,18 +55,29 @@
 			<input type="button" class="leaveChannelButton" id="leaveChannelButton" value="Leave channel">
 		</div>
 		<div class="user">
-			<h1>User</h1>
+			<h3>User</h3>
 			<input type="button" id="channelCreate" value="Create New Channel">
 		</div>
 		<div class="channelsPrivate">
-			<h1>Private Channels</h1>
+			<h3>Private Channels</h3>
 			<p id="privateChannelList"></p>
 		</div>
-		<div class="channelMessage bg-primary" id="channelMessage">
-			
+		<div class="channelMessage bg-white" id="channelMessage">
+			<div class="modal fade" id="Modal">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-body" id="modal-body">
+							<button id="laughEMJ" class="EMJ">&#128516;</button>
+							<button id="laughEMJ" class="EMJ">&#128525;</button>
+							<button id="laughEMJ" class="EMJ">&#128151;</button>
+						</div>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				  </div>
+			</div> 
 			<div class="messageView" id="messageText">Choose a channel to view channel message</div>
 			<input type="textarea" class= "typeBox" id="messageBox">
-			<input type="button" class= "btn btn-success" id="messageSend" value="Send">
+			<input type="button" class= "btn btn-success" id="messageSend" value="Send" style="display: none">
 		</div>
 		
 		<div class="channelCreateForm" id="channelCreateForm">
