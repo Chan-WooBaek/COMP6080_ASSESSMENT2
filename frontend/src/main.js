@@ -124,7 +124,6 @@ document.getElementById("messageText").addEventListener("scroll", (event) => {
 	event.stopPropagation();
     if (document.getElementById("messageText").scrollTop === 0 && channel.getMESSAGECOUNT() !== 0) {
 		// Add new batch of messages
-		console.log("hitting top");
 		channel.updateMessages(TOKEN, channel.getCurrentChannelId());
 	}
 });
@@ -167,25 +166,66 @@ document.getElementById("inviteChannelButton").addEventListener("click", (event)
 	$('#ModalUserInvite').modal('show');
 })
 
+// Refresh invited list when closed
 document.getElementById("inviteCloseButton").addEventListener("click", (event) => {
 	channel.resetInvitedList();
 })
 
+// Add users in invited list to channel
 document.getElementById("inviteSubmitButton").addEventListener("click", (event) => {
 	channel.addMembers(TOKEN, channel.getCurrentChannelId());
 	channel.resetInvitedList();
 })
 
+// Edit profile button clicked
 document.getElementById("editProfile").addEventListener("click", (event) => {
 	helper.removeAllChildNodes(document.getElementById("invite-modal-body"));
 	channel.editUserForm(USERPASSWORD);
 	$('#ModalUserEdit').modal('show');
 })
 
+// When user edit is closed
 $('#ModalUserEdit').on('hidden.bs.modal', function (e) {
 	helper.removeAllChildNodes(document.getElementById("edit-modal-body"));
 })
 
+// When user edit submit button is pressed
 document.getElementById("editSubmitButton").addEventListener("click", (event) => {
 	channel.updateUser(TOKEN);
+})
+
+// When logout button is pressed
+document.getElementById("logout").addEventListener("click", (event) => {
+	helper.myFetch('POST', 'auth/logout', TOKEN)
+	.then(data => {
+		document.getElementById("notLoggedIn").style.display = "grid";
+		document.getElementById("loggedIn").style.display = "none";
+	})
+})
+
+
+// When darkmode button is pressed
+document.getElementById("darkMode").addEventListener("click", (event) => {
+	var Public = document.getElementById("channelsPublic");
+	Public.classList.toggle("darkMode");
+	var Private = document.getElementById("channelsPrivate");
+	Private.classList.toggle("darkMode");
+	var Info = document.getElementById("channelInfo");
+	Info.classList.toggle("darkMode");
+	var User = document.getElementById("user");
+	User.classList.toggle("darkMode");
+	var Message = document.getElementById("channelMessage");
+	Message.classList.toggle("darkMode");
+	var Background = document.getElementById("loggedIn");
+	Background.classList.toggle("darkModeContrast");
+})
+
+// When pinnedmessages modal is closed refresh messages
+$('#ModalPinnedMessages').on('hide.bs.modal', function (e) {
+	channel.loadMessages(TOKEN, channel.getCurrentChannelId());
+})
+
+// When react modal is closed refresh messages
+$('#ModalReact').on('hide.bs.modal', function (e) {
+	channel.loadMessages(TOKEN, channel.getCurrentChannelId());
 })

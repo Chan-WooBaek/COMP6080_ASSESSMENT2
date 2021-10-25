@@ -6,6 +6,7 @@ let PINMESSAGECOUNT = 0;
 var currentMessageId;
 let INVITEDMEMBERS = [];
 
+// Update channel lists
 export function updateChannelListShow(TOKEN, USERID) {
 	document.getElementById("publicChannelList").textContent = "";
 	helper.myFetch('GET', 'channel', TOKEN)
@@ -23,13 +24,14 @@ export function updateChannelListShow(TOKEN, USERID) {
 	
 }
 
+// Add channel buttons to the lists
 export function addChannelButton(value, isPrivate, TOKEN, channelId) {
 	var newline = document.createElement("br");
     var element = document.createElement("input");
     element.type = "button";
 	element.value = value;
 	element.name = value;
-	element.style="border: none; background: none; padding: 0;"
+	element.style="border: none; background: none; padding: 0; color: inherit;"
 	element.onclick = function() {
 		helper.myFetch('GET', `channel/${channelId}`, TOKEN)
 		// If a member
@@ -66,6 +68,7 @@ export function addChannelButton(value, isPrivate, TOKEN, channelId) {
 	
 }
 
+// Create channel
 export function createChannel(TOKEN) {
 	const body = {
 		name: document.getElementById("newChannelName").value,
@@ -78,6 +81,7 @@ export function createChannel(TOKEN) {
 	})
 }
 
+// Edit channel
 export function editChannel(TOKEN) {
 	const body = {
 		name: document.getElementById("editChannelName").value,
@@ -89,6 +93,7 @@ export function editChannel(TOKEN) {
 	})
 }
 
+// Update info screen
 export function updateChannelInfoScreen(TOKEN, channelId) {
 
 	helper.myFetch('GET', `channel/${channelId}`, TOKEN)
@@ -114,6 +119,7 @@ export function getCurrentMessageId() {
 	return currentMessageId;
 }
 
+// Channel Info time format
 export function getUserDate(date) {
 	var day = date.getDate();
 	var month = date.getMonth();
@@ -123,6 +129,7 @@ export function getUserDate(date) {
 	return `Time ${hour}:${minutes} | Date ${day}/${month}/${year}`;
 }
 
+// Edit message time format
 export function getEditDate(date) {
 	var day = date.getDate();
 	var month = date.getMonth();
@@ -132,18 +139,21 @@ export function getEditDate(date) {
 	return `${hour}:${minutes} | ${day}/${month}/${year}`;
 }
 
+// Get hour and minutes
 export function getTime(date) {
 	var hour = String(date.getHours()).padStart(2,'0');
 	var minutes = String(date.getMinutes()).padStart(2,'0');
 	return `${hour}:${minutes}`;
 }
 
+// Get day and month
 export function getDate(date) {
 	var day = date.getDate();
 	var month = date.getMonth();
 	return `${day}/${month}`;
 }
 
+// Join current channel
 export function joinChannel(TOKEN) {
 	helper.myFetch('POST', `channel/${getCurrentChannelId()}/join`, TOKEN)
 	.then(data => {
@@ -154,6 +164,7 @@ export function joinChannel(TOKEN) {
 	})
 }
 
+// Leave current channel
 export function leaveChannel(TOKEN) {
 	helper.myFetch('GET', `channel/${getCurrentChannelId()}`, TOKEN)
 	.then(data => {
@@ -166,6 +177,7 @@ export function leaveChannel(TOKEN) {
 	})
 }
 
+// Default page layout when no channel is shown
 export function defaultChannelPage() {
 	document.getElementById("infoText").textContent = "Choose a channel to view channel info";
 	document.getElementById("messageText").textContent = "Choose a channel to view channel message";
@@ -175,6 +187,7 @@ export function defaultChannelPage() {
 	document.getElementById("pinnedMessageButton").style.display = "none";
 }
 
+// Initial loading of messages in channel
 export function loadMessages(TOKEN, channelId) {
 	MESSAGECOUNT = 0;
 	helper.removeAllChildNodes(document.getElementById("messageText"));
@@ -217,6 +230,7 @@ export function loadMessages(TOKEN, channelId) {
 			content.append(messages[i]['message']);
 			content.id = `text${messages[i]['id']}`;
 			content.classList.add("messageOutputBox");
+			content.style = "color: black"
 			content.addEventListener("blur", (event) => {
 				console.log(document.getElementById(`text${messages[i]['id']}`));
 				document.getElementById(`text${messages[i]['id']}`).contentEditable = false;
@@ -314,7 +328,7 @@ export function getNameFromId(userId, TOKEN, channelId) {
 	})
 }
 
-
+// Subsequent messages loaded after first 25 message
 export function updateMessages(TOKEN, channelId) {
 	var messageText = document.getElementById("messageText");
 	var oldHeight = messageText.scrollHeight;
@@ -440,6 +454,7 @@ export function updateMessages(TOKEN, channelId) {
 	
 }
 
+// Send messages
 export function sendMessages(TOKEN, channelId) {
 	if (document.getElementById("messageBox").value.length === 0 || document.getElementById("messageBox").value.indexOf(' ') === 0) {
 		return;
@@ -454,6 +469,7 @@ export function sendMessages(TOKEN, channelId) {
 	})
 }
 
+//Delete messages
 export function deleteMessages(messageId, TOKEN, channelId) {
 	helper.myFetch('DELETE', `message/${channelId}/${messageId}`, TOKEN)
 	.then( data => {
@@ -461,6 +477,7 @@ export function deleteMessages(messageId, TOKEN, channelId) {
 	})
 }
 
+// Edit messages
 export function editMessages(messageId, TOKEN, channelId) {
 	console.log(document.getElementById(`text${messageId}`).textContent);
 	const body = {
@@ -477,6 +494,7 @@ export function editMessages(messageId, TOKEN, channelId) {
 	})
 }
 
+// Add react
 export function addReact(reactValue, TOKEN) {
 	const body = {
 		react: reactValue
@@ -487,6 +505,7 @@ export function addReact(reactValue, TOKEN) {
 	})
 }
 
+// Unreact
 export function unReact(reactValue, TOKEN) {
 	const body = {
 		react: reactValue
@@ -497,6 +516,7 @@ export function unReact(reactValue, TOKEN) {
 	})
 }
 
+// Pin current message
 export function pinCurrentMessage(TOKEN) {
 	helper.myFetch("POST", `message/pin/${getCurrentChannelId()}/${getCurrentMessageId()}`, TOKEN)
 	.then(data => {
@@ -504,6 +524,7 @@ export function pinCurrentMessage(TOKEN) {
 	})
 }
 
+// Unpin current message
 export function unpinCurrentMessage(TOKEN, messageId) {
 	helper.myFetch("POST", `message/unpin/${getCurrentChannelId()}/${messageId}`, TOKEN)
 	.then(data => {
@@ -511,6 +532,7 @@ export function unpinCurrentMessage(TOKEN, messageId) {
 	})
 }
 
+// Refresh pinned messages list
 export function updatePinnedMessages(TOKEN, channelId) {
 	// Map through all msgs in channel
 	helper.myFetch("GET", `message/${channelId}?start=${PINMESSAGECOUNT}`, TOKEN)
@@ -543,6 +565,7 @@ export function updatePinnedMessages(TOKEN, channelId) {
 	})
 }
 
+// Append user info into the user profile
 function appendUserInfo(TOKEN, userId) {
 	helper.removeAllChildNodes(document.getElementById("user-modal-body"));
 	helper.myFetch("GET", `user/${userId}`, TOKEN)
@@ -570,6 +593,8 @@ function appendUserInfo(TOKEN, userId) {
 	})
 }
 
+
+// Get image from id
 function senderImg(TOKEN, senderId) {
 	var img = document.createElement("img");
 	helper.myFetch("GET", `user/${senderId}`, TOKEN)
@@ -589,6 +614,7 @@ function senderImg(TOKEN, senderId) {
 	return img;
 }
 
+// Update the potential users to invite
 export function updateUserInviteList(TOKEN, channelId) {
 	var userIdList;
 	var userButtonDiv = document.createElement("div");
@@ -629,6 +655,7 @@ export function updateUserInviteList(TOKEN, channelId) {
 	})
 }
 
+// Update list of users to be invited
 export function updateUserInvitedList(name, TOKEN, channelId) {
 	helper.removeAllChildNodes(document.getElementById("invite-modal-body"));
 	var InvitedDiv = document.createElement("div");
@@ -656,6 +683,7 @@ export function addMembers(TOKEN, channelId) {
 	}
 }
 
+// Create edit user form
 export function editUserForm(password) {
 	// Password display
 	var userPasswordToggle = document.createElement("div");
@@ -724,6 +752,7 @@ export function editUserForm(password) {
 	document.getElementById("edit-modal-body").appendChild(userPic);
 }
 
+// Update user with info from edit user form
 export function updateUser(TOKEN) {
 	const body = {
 		email: document.getElementById("newEmail").value,

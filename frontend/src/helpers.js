@@ -60,12 +60,14 @@ export const myFetch = (method, path, token, body) => {
 	});
 }
 
+// Remove all child nodes in parent node
 export function removeAllChildNodes(parent) {
     while (parent.firstChild) {
         parent.removeChild(parent.firstChild);
     }
 }
 
+// Add bootstrap icons
 export function addIcon(icon) {
 	var i = document.createElement("i");
 	i.classList.add("bi");

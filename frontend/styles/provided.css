@@ -21,6 +21,13 @@ html, body {
 .register {
 	display: none;
 	text-align: center;
+	margin-top: 100px;
+}
+
+.copyright {
+	position: absolute;
+	right: 20px;
+	bottom: 0px;
 }
 
 .popup {
@@ -37,12 +44,12 @@ html, body {
 
 .loggedIn {
 	display: none;
-	grid-template-columns: 2fr 10fr 4fr;
+	grid-template-columns: 2fr 5fr 5fr 4fr;
 	grid-template-rows: 1fr 1fr 2fr;
 	grid-template-areas: 
-		"Public Info User"
-		"Public Message Message"
-		"Private Message Message";
+		"Public Info Info User"
+		"Public Message Message Message"
+		"Private Message Message Message";
 	width: 100%;
 	height: 100vh;
 	overflow: hidden;
@@ -55,7 +62,7 @@ html, body {
 	border-radius: 30px;
 	text-align: center;
 	overflow: scroll;
-	margin: 10px;
+	margin: 5px;
 	margin-left: 5%;
 	margin-right: 0px;
 	overflow-x: hidden;
@@ -80,7 +87,7 @@ html, body {
 	border-radius: 30px;
 	text-align: center;
 	overflow: scroll;
-	margin: 10px;
+	margin: 5px;
 	margin-left: 5%;
 	margin-right: 0px;
 	overflow-x: hidden;
@@ -103,7 +110,7 @@ html, body {
 	white-space: pre-line;
 	line-height: 13px;
 	height: auto;
-	margin: 1%;
+	margin: 5px;
 	background-color: white;
 	border-radius: 30px;
 	overflow: scroll;
@@ -125,14 +132,15 @@ html, body {
 .channelMessage {
 	grid-area: Message;
 	line-height: 30px;
-	margin: 1%;
+	margin: 5px;
 	border-radius: 30px;
+	background-color: white;
 }
 
 .messageView {
 	overflow: scroll;
-	height: 80%;
-	margin-left: 20px;
+	height: 85%;
+	margin-left: 5px;
 }
 .messageView::-webkit-scrollbar {
     width: 15px;
@@ -150,8 +158,7 @@ html, body {
 	grid-area: User;
 	background-color: white;
 	border-radius: 30px;
-	margin: 5%;
-	margin-right: 6%;
+	margin: 5px;
 	text-align: center;
 	align-items: center;
 }
@@ -163,9 +170,10 @@ html, body {
 	align-self: center;
 	flex-direction: column;
 	padding: 4px;
-	width: 20vw;
+	width: fit-content;
 	text-align: center;
 	margin: auto;
+	overflow: hidden;
 }
 
 .channelEditForm {
@@ -175,7 +183,7 @@ html, body {
 	align-self: center;
 	flex-direction: column;
 	padding: 4px;
-	width: 20vw;
+	width: fit-content;
 	text-align: center;
 	margin: auto;
 }
@@ -199,7 +207,7 @@ html, body {
 	align-self: center;
 	flex-direction: column;
 	padding: 4px;
-	width: 20vw;
+	width: fit-content;
 	text-align: center;
 	margin: auto;
 }
@@ -211,7 +219,7 @@ html, body {
 	align-self: center;
 	flex-direction: column;
 	padding: 4px;
-	width: 20vw;
+	width: fit-content;
 	text-align: center;
 	margin: auto;
 }
@@ -222,7 +230,7 @@ html, body {
 }
 
 .typeBox {
-	width: 85%;
+	width: 75%;
 	display: none;
 	float: left;
 	margin-left: 20px;
@@ -271,16 +279,62 @@ html, body {
 	margin-right: auto;
 	background-color: rgba(0,0,0,0);
 	border: none;
+	color: inherit;
 }
 
 .senderButton {
 	background-color: rgba(0,0,0,0);
 	border: none;
+	color: inherit;
+}
+
+.createChannelButton {
+	background-color: rgba(0,0,0,0);
+	border: none;
+	color: inherit;
+}
+
+.editProfileButton {
+	background-color: rgba(0,0,0,0);
+	border: none;
+	color: inherit;
+}
+
+.logout {
+	background-color: rgba(0,0,0,0);
+	border: none;
+	color: inherit;
+}
+
+.darkModeButton {
+	background-color: rgba(0,0,0,0);
+	border: none;
+	color: inherit;
+}
+
+.darkMode {
+	background-color: rgb(32,33,36);
+	color: white;
+}
+
+.darkModeContrast {
+	background-color: grey;
 }
 
 @media (max-width: 1000px) {
 	.loggedIn {
-		grid-template-columns: 2fr 2fr 1fr;
-		grid-template-rows: 1fr 1fr 2fr;
+		grid-template-columns: 1fr 1fr 1fr 1fr;
+		grid-template-rows: 1fr 2fr 1fr;
+		grid-template-areas:
+			"Info Info Info User"
+			"Message Message Message Message"
+			"Private Private Public Public";
+	}
+	.channelMessage {
+		height: 90%;
+		overflow: hidden;
+	}
+	.messageView {
+		height: 75%;
 	}
 }

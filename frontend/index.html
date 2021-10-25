@@ -17,7 +17,7 @@
 <main role="main">
 	<!-- app goes here -->
 	<div class="notLoggedIn" id="notLoggedIn">
-		<h1>Slackr</h1>
+		<h1 style="text-align: center; font-weight: bolder;">Slackr</h1>
 		<div class="login">
 			<h1>Login Form</h1>
 			<form id="loginForm">
@@ -41,14 +41,14 @@
 			<p id="popupMsg"></p>
 			<input type="button" id="errorClose" value="Close">
 		</div>
-		<p>&copy; Slackr</p>
+		<p class="copyright">&copy; Slackr</p>
 	</div>
 	<div class="loggedIn" id="loggedIn">
-		<div class="channelsPublic">
+		<div class="channelsPublic" id="channelsPublic">
 			<h3>Public Channels</h3>
 			<p id="publicChannelList"></p>
 		</div>
-		<div class="channelInfo">
+		<div class="channelInfo" id="channelInfo">
 			<p id="infoText" class="infoText">Choose a channel to view channel info</p>
 			<div>
 				<input type="button" class="editChannelButton" id="editChannelButton" value="Edit channel">
@@ -56,16 +56,18 @@
 				<input type="button" class="inviteChannelButton" id="inviteChannelButton" value="Invite to channel">
 			</div>
 		</div>
-		<div class="user">
+		<div class="user" id="user">
 			<h3>User</h3>
-			<input type="button" id="channelCreate" value="Create New Channel">
-			<input type="button" id="editProfile" value="Edit Profile">
+			<input type="button" id="channelCreate" class="createChannelButton" value="Create New Channel">
+			<input type="button" id="editProfile" class="editProfileButton" value="Edit Profile">
+			<input type="button" id="logout" class="logout" value="Logout">
+			<input type="button" id="darkMode" class="darkModeButton" value="Dark Mode">
 		</div>
-		<div class="channelsPrivate">
+		<div class="channelsPrivate" id="channelsPrivate">
 			<h3>Private Channels</h3>
 			<p id="privateChannelList"></p>
 		</div>
-		<div class="channelMessage bg-white" id="channelMessage">
+		<div class="channelMessage" id="channelMessage">
 			<input id="pinnedMessageButton" type="button" value="Click me for pinned messages" class="pinnedMessages">
 			<div class="modal fade" id="ModalReact">
 				<div class="modal-dialog modal-dialog-centered" role="document">
@@ -79,16 +81,16 @@
 					</div>
 				  </div>
 			</div>
-			<div class="modal fade" id="ModalPinnedMessages">
+			<div class="modal fade" id="ModalPinnedMessages" style="color: black;">
 				<div class="modal-dialog modal-dialog-centered" role="document">
 					<div class="modal-content">
 						<div class="modal-body" id="pin-modal-body">
 						</div>
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal" id="closePinned">Close</button>
 					</div>
 				  </div>
 			</div>
-			<div class="modal fade" id="ModalUserProfile">
+			<div class="modal fade" id="ModalUserProfile" style="color: black;">
 				<div class="modal-dialog modal-dialog-centered" role="document">
 					<div class="modal-content">
 						<div class="modal-body" id="user-modal-body">
@@ -97,7 +99,7 @@
 					</div>
 				  </div>
 			</div>
-			<div class="modal fade" id="ModalUserInvite">
+			<div class="modal fade" id="ModalUserInvite" style="color: black;">
 				<div class="modal-dialog modal-dialog-centered" role="document">
 					<div class="modal-content">
 						<div class="modal-body" id="invite-modal-body">
@@ -107,7 +109,7 @@
 					</div>
 				  </div>
 			</div>
-			<div class="modal fade" id="ModalUserEdit">
+			<div class="modal fade" id="ModalUserEdit" style="color: black;">
 				<div class="modal-dialog modal-dialog-centered" role="document">
 					<div class="modal-content">
 						<div class="modal-body" id="edit-modal-body">
