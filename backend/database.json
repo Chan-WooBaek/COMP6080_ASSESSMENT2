@@ -17,11 +17,11 @@
       "sessionActive": true
     },
     "28926": {
-      "email": "chanwoobaek1@hotmail.com",
-      "name": "Chan",
-      "password": "thisischan",
-      "bio": null,
-      "image": null,
+      "email": "chanwoobaek@email.com",
+      "name": "ChanWoo",
+      "password": "newpassword",
+      "bio": "newBio2",
+      "image": "C:\\fakepath\\Toad.png",
       "sessionActive": true
     },
     "36551": {
@@ -49,11 +49,11 @@
       "sessionActive": true
     },
     "65577": {
-      "email": "chanwoobaek@hotmail.com",
-      "name": "Chan",
+      "email": "chanwoobaek1@hotmail.com",
+      "name": "ChanWoo",
       "password": "thisischan",
-      "bio": null,
-      "image": null,
+      "bio": "newnew",
+      "image": "src/images/Toad.png",
       "sessionActive": true
     }
   },
@@ -65,7 +65,12 @@
       "description": "yo",
       "createdAt": "2021-09-13T08:00:03.220Z",
       "members": [
-        65577
+        65577,
+        15122,
+        15272,
+        28926,
+        36551,
+        41601
       ],
       "messages": [
         {
@@ -109,7 +114,7 @@
           "sentAt": "2021-10-23T14:30:00.201Z",
           "edited": true,
           "editedAt": "2021-10-24T17:23:05.858Z",
-          "pinned": false,
+          "pinned": true,
           "reacts": []
         },
         {
@@ -120,7 +125,7 @@
           "sentAt": "2021-10-23T13:57:54.719Z",
           "edited": true,
           "editedAt": "2021-10-24T08:19:05.657Z",
-          "pinned": false,
+          "pinned": true,
           "reacts": []
         },
         {

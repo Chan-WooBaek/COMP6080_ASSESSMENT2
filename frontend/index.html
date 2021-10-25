@@ -21,7 +21,7 @@
 		<div class="login">
 			<h1>Login Form</h1>
 			<form id="loginForm">
-				<input type="text" id="loginEmail" placeholder="email" value="chanwoobaek@hotmail.com"><br>
+				<input type="text" id="loginEmail" placeholder="email" value="chanwoobaek1@hotmail.com"><br>
 				<input type="password" id="loginPassword" placeholder="password" value="thisischan"><br>
 				<input type="button" id="loginSubmit" value="Submit">
 				<input type="button" id="loginRegister" value="Register">
@@ -49,32 +49,74 @@
 			<p id="publicChannelList"></p>
 		</div>
 		<div class="channelInfo">
-			 
 			<p id="infoText" class="infoText">Choose a channel to view channel info</p>
-			<input type="button" class="editChannelButton" id="editChannelButton" value="Edit channel">
-			<input type="button" class="leaveChannelButton" id="leaveChannelButton" value="Leave channel">
+			<div>
+				<input type="button" class="editChannelButton" id="editChannelButton" value="Edit channel">
+				<input type="button" class="leaveChannelButton" id="leaveChannelButton" value="Leave channel">
+				<input type="button" class="inviteChannelButton" id="inviteChannelButton" value="Invite to channel">
+			</div>
 		</div>
 		<div class="user">
 			<h3>User</h3>
 			<input type="button" id="channelCreate" value="Create New Channel">
+			<input type="button" id="editProfile" value="Edit Profile">
 		</div>
 		<div class="channelsPrivate">
 			<h3>Private Channels</h3>
 			<p id="privateChannelList"></p>
 		</div>
 		<div class="channelMessage bg-white" id="channelMessage">
-			<div class="modal fade" id="Modal">
+			<input id="pinnedMessageButton" type="button" value="Click me for pinned messages" class="pinnedMessages">
+			<div class="modal fade" id="ModalReact">
 				<div class="modal-dialog modal-dialog-centered" role="document">
 					<div class="modal-content">
-						<div class="modal-body" id="modal-body">
-							<input type="button" id="laughEMJ" class="EMJ" value="&#128516;"></button>
-							<input type="button" id="heartEyeEMJ" class="EMJ" value="&#128525;"></button>
-							<input type="button" id="heartEMJ" class="EMJ" value="&#128151;"></button>
+						<div class="modal-body" id="react-modal-body">
+							<input type="button" id="laughEMJ" class="EMJ" value="&#128516;">
+							<input type="button" id="heartEyeEMJ" class="EMJ" value="&#128525;">
+							<input type="button" id="heartEMJ" class="EMJ" value="&#128151;">
 						</div>
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 					</div>
 				  </div>
-			</div> 
+			</div>
+			<div class="modal fade" id="ModalPinnedMessages">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-body" id="pin-modal-body">
+						</div>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				  </div>
+			</div>
+			<div class="modal fade" id="ModalUserProfile">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-body" id="user-modal-body">
+						</div>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				  </div>
+			</div>
+			<div class="modal fade" id="ModalUserInvite">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-body" id="invite-modal-body">
+						</div>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal" id="inviteCloseButton">Close</button>
+						<button type="button" class="btn btn-primary" data-dismiss="modal" id="inviteSubmitButton">Submit</button>
+					</div>
+				  </div>
+			</div>
+			<div class="modal fade" id="ModalUserEdit">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-body" id="edit-modal-body">
+						</div>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal" id="editCloseButton">Close</button>
+						<button type="button" class="btn btn-primary" data-dismiss="modal" id="editSubmitButton">Submit</button>
+					</div>
+				  </div>
+			</div>
 			<div class="messageView" id="messageText">Choose a channel to view channel message</div>
 			<input type="textarea" class= "typeBox" id="messageBox">
 			<input type="button" class= "btn btn-success" id="messageSend" value="Send" style="display: none">

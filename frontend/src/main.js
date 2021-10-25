@@ -15,6 +15,10 @@ let USERID = null;
 const storeCurrentUserId = (userId) => {
 	USERID = userId;
 }
+let USERPASSWORD = null;
+const storePassword = (password) => {
+	USERPASSWORD = password;
+}
 
 // LoginForm register button is pressed
 document.getElementById("loginRegister").addEventListener("click", (event) => {
@@ -31,6 +35,7 @@ document.getElementById("loginSubmit").addEventListener("click", (event) => {
 	}
 	helper.myFetch('POST','auth/login', null, body)
 	.then((data) => {
+		storePassword(password);
 		storeToken(data['token']);
 		storeCurrentUserId(data['userId']);
 		document.getElementById("notLoggedIn").style.display = "none";
@@ -140,16 +145,47 @@ document.querySelectorAll('.EMJ').forEach((btn) => {
 	btn.addEventListener("click", (event) => {
 		channel.addReact(btn.value, TOKEN);
 		channel.loadMessages(TOKEN, channel.getCurrentChannelId());
-	})
+	});
 	btn.addEventListener("auxclick", (event) => {
 		event.preventDefault();
 		channel.unReact(btn.value, TOKEN);
 		channel.loadMessages(TOKEN, channel.getCurrentChannelId());
-	})
+	});
 })
 
 // Open pin messages
-document.getElementById("give").addEventListener("click", (event) => {
-	event.preventDefault();
-	console.log("open pin msgs");
+document.getElementById("pinnedMessageButton").addEventListener("click", (event) => {
+	helper.removeAllChildNodes(document.getElementById("pin-modal-body"));
+	channel.updatePinnedMessages(TOKEN, channel.getCurrentChannelId());
+	$('#ModalPinnedMessages').modal('show');
+})
+
+// Invite user to current channel
+document.getElementById("inviteChannelButton").addEventListener("click", (event) => {
+	helper.removeAllChildNodes(document.getElementById("invite-modal-body"));
+	channel.updateUserInviteList(TOKEN, channel.getCurrentChannelId());
+	$('#ModalUserInvite').modal('show');
+})
+
+document.getElementById("inviteCloseButton").addEventListener("click", (event) => {
+	channel.resetInvitedList();
+})
+
+document.getElementById("inviteSubmitButton").addEventListener("click", (event) => {
+	channel.addMembers(TOKEN, channel.getCurrentChannelId());
+	channel.resetInvitedList();
+})
+
+document.getElementById("editProfile").addEventListener("click", (event) => {
+	helper.removeAllChildNodes(document.getElementById("invite-modal-body"));
+	channel.editUserForm(USERPASSWORD);
+	$('#ModalUserEdit').modal('show');
+})
+
+$('#ModalUserEdit').on('hidden.bs.modal', function (e) {
+	helper.removeAllChildNodes(document.getElementById("edit-modal-body"));
+})
+
+document.getElementById("editSubmitButton").addEventListener("click", (event) => {
+	channel.updateUser(TOKEN);
 })

@@ -2,7 +2,9 @@ import * as helper from './helpers.js';
 
 var currentChannelId = false;
 let MESSAGECOUNT = 0;
+let PINMESSAGECOUNT = 0;
 var currentMessageId;
+let INVITEDMEMBERS = [];
 
 export function updateChannelListShow(TOKEN, USERID) {
 	document.getElementById("publicChannelList").textContent = "";
@@ -34,6 +36,8 @@ export function addChannelButton(value, isPrivate, TOKEN, channelId) {
 		.then(data => {
 			document.getElementById("editChannelButton").style.display = "flex";
 			document.getElementById("leaveChannelButton").style.display = "flex";
+			document.getElementById("inviteChannelButton").style.display = "flex";
+			document.getElementById("pinnedMessageButton").style.display = "block";
 			currentChannelId = channelId;
 			updateChannelInfoScreen(TOKEN, channelId);
 			loadMessages(TOKEN, channelId);
@@ -167,6 +171,8 @@ export function defaultChannelPage() {
 	document.getElementById("messageText").textContent = "Choose a channel to view channel message";
 	document.getElementById("editChannelButton").style.display = "none";
 	document.getElementById("leaveChannelButton").style.display = "none";
+	document.getElementById("inviteChannelButton").style.display = "none";
+	document.getElementById("pinnedMessageButton").style.display = "none";
 }
 
 export function loadMessages(TOKEN, channelId) {
@@ -182,9 +188,19 @@ export function loadMessages(TOKEN, channelId) {
 			textbox.classList.add("textarea");
 			// Message sender
 			const sender = document.createElement("div");
+			const senderButton = document.createElement("input");
+			senderButton.type = "button"
+			senderButton.id = messages[i]['sender'];
+			senderButton.classList.add("senderButton");
+			senderButton.addEventListener("click", (event) => {
+				appendUserInfo(TOKEN, senderButton.id);
+				$('#ModalUserProfile').modal('show');
+			})
 			getNameFromId(messages[i]["sender"], TOKEN, channelId)
 			.then(data => {
-				sender.textContent = data;
+				senderButton.value = data;
+				sender.append(senderImg(TOKEN, senderButton.id));
+				sender.appendChild(senderButton);
 			})
 			// Message sent time
 			const time = document.createElement("div");
@@ -242,13 +258,14 @@ export function loadMessages(TOKEN, channelId) {
 			reactButton.classList.add("icon");
 			reactButton.addEventListener("click", (event) => {
 				currentMessageId = messages[i]["id"];
-				$('#Modal').modal('show');
+				$('#ModalReact').modal('show');
 			});
 
 			// Pin message button
 			if (messages[i]['pinned']) {
 				var pinButton = helper.addIcon("bi-pin-angle-fill");
 			} else var pinButton = helper.addIcon("bi-pin-angle");
+
 			pinButton.classList.add("icon");
 			
 			pinButton.addEventListener("click", (event) => {
@@ -309,9 +326,19 @@ export function updateMessages(TOKEN, channelId) {
 			textbox.classList.add("textarea");
 			// Message sender
 			const sender = document.createElement("div");
+			const senderButton = document.createElement("input");
+			senderButton.type = "button"
+			senderButton.id = messages[i]['sender'];
+			senderButton.classList.add("senderButton");
+			senderButton.addEventListener("click", (event) => {
+				appendUserInfo(TOKEN, senderButton.id);
+				$('#ModalUserProfile').modal('show');
+			})
 			getNameFromId(messages[i]["sender"], TOKEN, channelId)
 			.then(data => {
-				sender.textContent = data;
+				senderButton.value = data;
+				sender.append(senderImg(TOKEN, senderButton.id));
+				sender.appendChild(senderButton);
 			})
 			// Message sent time
 			const time = document.createElement("div");
@@ -369,18 +396,23 @@ export function updateMessages(TOKEN, channelId) {
 			reactButton.classList.add("icon");
 			reactButton.addEventListener("click", (event) => {
 				currentMessageId = messages[i]["id"];
-				$('#Modal').modal('show');
+				$('#ModalReact').modal('show');
 			});
 
 			// Pin message button
-			var pinButton = helper.addIcon("bi-pin-angle");
+			if (messages[i]['pinned']) {
+				var pinButton = helper.addIcon("bi-pin-angle-fill");
+			} else var pinButton = helper.addIcon("bi-pin-angle");
+
 			pinButton.classList.add("icon");
+			
 			pinButton.addEventListener("click", (event) => {
 				currentMessageId = messages[i]["id"];
-				console.log("pin");
+				pinCurrentMessage(TOKEN);
+				loadMessages(TOKEN, channelId);
 			});
 
-			// React result div
+			// Show react div
 			var reactDiv = document.createElement("div");
 			reactDiv.classList.add("reactDiv");
 			reactDiv.id = `react${messages[i]['id']}`;
@@ -472,9 +504,239 @@ export function pinCurrentMessage(TOKEN) {
 	})
 }
 
-export function unpinCurrentMessage(TOKEN) {
-	helper.myFetch("POST", `message/unpin/${getCurrentChannelId()}/${getCurrentMessageId()}`, TOKEN)
+export function unpinCurrentMessage(TOKEN, messageId) {
+	helper.myFetch("POST", `message/unpin/${getCurrentChannelId()}/${messageId}`, TOKEN)
 	.then(data => {
 
+	})
+}
+
+export function updatePinnedMessages(TOKEN, channelId) {
+	// Map through all msgs in channel
+	helper.myFetch("GET", `message/${channelId}?start=${PINMESSAGECOUNT}`, TOKEN)
+	.then(data => {
+		const messages = data['messages'];
+		for (let i=0; i < messages.length; i++) {
+			// Look for pinned messages
+			if (messages[i]["pinned"]) {
+				var pinMessage = document.createElement("div");
+				var unpinButton = helper.addIcon("bi-pin")
+				unpinButton.classList.add("icon");
+				unpinButton.addEventListener("click", (event) => {
+					unpinCurrentMessage(TOKEN, messages[i]['id']);
+					loadMessages(TOKEN, channelId);
+				})
+				pinMessage.appendChild(unpinButton);
+				pinMessage.append(messages[i]['message']);
+				document.getElementById("pin-modal-body").appendChild(pinMessage);
+			}
+		}
+		if (messages.length === 25) {
+			// Go to next batch of messages
+			PINMESSAGECOUNT += 25;
+			return updatePinnedMessages(TOKEN, channelId);
+		} else {
+			// Last batch of messages
+			PINMESSAGECOUNT = 0;
+			return;
+		}
+	})
+}
+
+function appendUserInfo(TOKEN, userId) {
+	helper.removeAllChildNodes(document.getElementById("user-modal-body"));
+	helper.myFetch("GET", `user/${userId}`, TOKEN)
+	.then(data => {
+		// Add profile pic
+		var img = document.createElement("div");
+		img.append("Profile Photo: ")
+		img.appendChild(senderImg(TOKEN, userId))
+		document.getElementById("user-modal-body").appendChild(img);
+		// Add name
+		var name = document.createElement("div");
+		name.append("Name: ")
+		name.append(data['name'])
+		document.getElementById("user-modal-body").appendChild(name);
+		// Add bio
+		var bio = document.createElement("div");
+		bio.append("Bio: ")
+		if (data['bio'] !== null) bio.append(data['bio']);
+		document.getElementById("user-modal-body").appendChild(bio);
+		// Add email
+		var email = document.createElement("div");
+		email.append("Email: ")
+		email.append(data['email'])
+		document.getElementById("user-modal-body").appendChild(email);
+	})
+}
+
+function senderImg(TOKEN, senderId) {
+	var img = document.createElement("img");
+	helper.myFetch("GET", `user/${senderId}`, TOKEN)
+	.then(data => {
+		if (data['image'] === null) {
+			img.src = "src/images/default.png";
+			img.style.width = "30px";
+			img.style.height = "30px";
+			img.style.borderRadius = "50%";
+		} else {
+			img.src = data['image'];
+			img.style.width = "30px";
+			img.style.height = "30px";
+			img.style.borderRadius = "50%";
+		}
+	})
+	return img;
+}
+
+export function updateUserInviteList(TOKEN, channelId) {
+	var userIdList;
+	var userButtonDiv = document.createElement("div");
+	helper.myFetch("GET", `channel/${channelId}`, TOKEN)
+	.then(data => {
+		// Get existing members
+		userIdList = data['members'];
+		return helper.myFetch('GET', `user`, TOKEN)
+	})
+	.then(data => {
+		var allUsers = [];
+		for (let i=0; i < data['users'].length; i++) {
+			allUsers.push(data['users'][i]['id']);
+		}
+		return allUsers
+	})
+	.then(data => {
+		// Compare to full list of users and get unique id's
+		let difference = data.filter(x => !userIdList.includes(x));
+		userButtonDiv.append("Invite List:");
+		for(let i = 0; i < difference.length; i++) {
+			getNameFromId(difference[i], TOKEN, channelId)
+			.then(name => {
+				var userButton = document.createElement("input");
+				userButton.type = "button";
+				userButton.value = name;
+				userButton.addEventListener("click", (event) => {
+					INVITEDMEMBERS.push({
+						id: difference[i],
+						name: name
+					});
+					updateUserInvitedList(name, TOKEN, channelId);
+				})
+				userButtonDiv.appendChild(userButton);
+			})
+		}
+		document.getElementById("invite-modal-body").appendChild(userButtonDiv);
+	})
+}
+
+export function updateUserInvitedList(name, TOKEN, channelId) {
+	helper.removeAllChildNodes(document.getElementById("invite-modal-body"));
+	var InvitedDiv = document.createElement("div");
+	InvitedDiv.append("Invited: ");
+	for (let i = 0; i < INVITEDMEMBERS.length; i++) {
+		InvitedDiv.append(` ${INVITEDMEMBERS[i]['name']}`);
+	}
+	
+	updateUserInviteList(TOKEN, channelId);
+	document.getElementById("invite-modal-body").appendChild(InvitedDiv);
+}
+
+export function resetInvitedList() {
+	INVITEDMEMBERS = [];
+}
+
+export function addMembers(TOKEN, channelId) {
+	for (let i = 0; i < INVITEDMEMBERS.length; i++) {
+		const body = {
+			userId: INVITEDMEMBERS[i]['id']
+		}
+		helper.myFetch('POST', `channel/${channelId}/invite`, TOKEN, body)
+		.then(data => {
+		})
+	}
+}
+
+export function editUserForm(password) {
+	// Password display
+	var userPasswordToggle = document.createElement("div");
+	userPasswordToggle.append("Password");
+	var passwordField = document.createElement("input");
+	passwordField.type = "password";
+	passwordField.value = password;
+	passwordField.id = "passwordField"
+	passwordField.disabled = true;
+	userPasswordToggle.appendChild(passwordField);
+	var togglePassword = document.createElement("input");
+	togglePassword.type = "checkbox";
+	togglePassword.addEventListener("click", (event) => {
+		var state = document.getElementById("passwordField");
+		if (state.type === "password") state.type = "text";
+		else state.type = "password";
+	})
+	userPasswordToggle.appendChild(togglePassword);
+	// Input for edit user name
+	var userName = document.createElement("div");
+	userName.append("Name: ");
+	var nameEdit = document.createElement("input");
+	nameEdit.type = "textarea";
+	nameEdit.id = "newName";
+	userName.appendChild(nameEdit);
+
+	// Input for edit user bio
+	var userBio = document.createElement("div");
+	userBio.append("Bio: ");
+	var bioEdit = document.createElement("input");
+	bioEdit.type = "textarea";
+	bioEdit.id = "newBio";
+	userBio.appendChild(bioEdit);
+
+	// Input for edit user email
+	var userEmail = document.createElement("div");
+	userEmail.append("Email: ");
+	var emailEdit = document.createElement("input");
+	emailEdit.type = "textarea";
+	emailEdit.id = "newEmail";
+	userEmail.appendChild(emailEdit);
+
+	// Input for edit user password
+	var userPassword = document.createElement("div");
+	userPassword.append("Password: ");
+	var passwordEdit = document.createElement("input");
+	passwordEdit.type = "textarea";
+	passwordEdit.id = "newPassword";
+	userPassword.appendChild(passwordEdit);
+
+	// Upload file button
+	var userPic = document.createElement("div");
+	userPic.append("Image Path: ");
+	var picEdit = document.createElement("input");
+	picEdit.type = "text";
+	picEdit.id = "newPic";
+	picEdit.placeholder = "e.g. src/images/default.png"
+	userPic.appendChild(picEdit);
+
+	document.getElementById("edit-modal-body").appendChild(userPasswordToggle);
+	document.getElementById("edit-modal-body").append("Edit user");
+	document.getElementById("edit-modal-body").appendChild(userName);
+	document.getElementById("edit-modal-body").appendChild(userBio);
+	document.getElementById("edit-modal-body").appendChild(userEmail);
+	document.getElementById("edit-modal-body").appendChild(userPassword);
+	document.getElementById("edit-modal-body").appendChild(userPic);
+}
+
+export function updateUser(TOKEN) {
+	const body = {
+		email: document.getElementById("newEmail").value,
+		password: document.getElementById("newPassword").value,
+		name: document.getElementById("newName").value,
+		bio: document.getElementById("newBio").value,
+		image: document.getElementById("newPic").value
+	}
+	helper.myFetch("PUT", `user`, TOKEN, body)
+	.then(data => {
+		console.log("success");
+	})
+	.catch(data => {
+		console.log(data);
 	})
 }
